@@ -70,32 +70,4 @@ export default {
   left: 0;
   bottom: -4px;
 }
-
-.zonaEventosDiariosCabeceraCalendarioResumenSemana {
-  float: left;
-  width: 100%;
-  height: 20px;
-}
-.lateralZonaHorariaCabecera {
-  float: left;
-  width: 50px;
-  height: 100%;
-  position: relative;
-}
-.zonaHoraria {
-  font-size: 10px;
-  position: absolute;
-  right: 3px;
-  bottom: 1px;
-}
-.zonaEventosDiarios {
-  float: left;
-  width: calc(100% - 50px);
-  height: 100%;
-}
-.eventosDiariosColumnaSemana {
-  float: left;
-  height: 100%;
-  border-left: 1px solid #b7b7b7;
-}
 </style>

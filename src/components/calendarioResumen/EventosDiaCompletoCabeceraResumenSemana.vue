@@ -55,8 +55,8 @@ export default {
 .zonaHoraria {
   font-size: 10px;
   position: absolute;
-  right: 3px;
-  bottom: 1px;
+  right: 7px;
+  top: 0;
 }
 .zonaEventosDiarios {
   float: left;
