@@ -1,24 +1,26 @@
 <template>
   <div @click="removeSelectedText" class="ccr-calendario">
     <div class="zonaBarraSuperior">
-      Hola mundo!
+      <Cabecera @semanaAnterior="semanaAnterior" @semanaSiguiente="semanaSiguiente" @irAHoy="irAHoy" :primerDiaSemanaMostrando="primerDiaSemanaMostrando" :numDiasMostrando="numDiasMostrando" :hoy="hoy"/>
     </div>
     <div class="zonaBarraLateral">
       <MiniCalendario :primerDiaSemanaMostrando="primerDiaSemanaMostrando" :numDiasMostrando="numDiasMostrando" :mesMostrando="mesMostrando" :hoy="hoy" :yearMostrando="yearMostrando"/>
     </div>
     <div class="zonaPrincipal">
-      <CalendarioResumenSemana/>
+      <CalendarioResumenSemana :primerDiaSemanaMostrando="primerDiaSemanaMostrando" :numDiasMostrando="numDiasMostrando" :hoy="hoy"/>
     </div>
   </div>
 </template>
 
 <script>
 import MiniCalendario from './components/miniCalendario/MiniCalendario.vue'
-import CalendarioResumenSemana from './components/CalendarioResumenSemana.vue'
+import CalendarioResumenSemana from './components/calendarioResumen/CalendarioResumenSemana.vue'
+import Cabecera from './components/cabecera/Cabecera.vue'
 
 export default {
   name: 'App',
   components: {
+    Cabecera,
     MiniCalendario,
     CalendarioResumenSemana,
   },
@@ -35,6 +37,15 @@ export default {
       };
   },
   methods: {
+    semanaAnterior() {
+      this.primerDiaSemanaMostrando = new Date(this.primerDiaSemanaMostrando.getTime() - (1000 * 60 * 60 * 24));
+    },
+    semanaSiguiente() {
+      this.primerDiaSemanaMostrando = new Date(this.primerDiaSemanaMostrando.getTime() + (1000 * 60 * 60 * 24));
+    },
+    irAHoy() {
+      this.primerDiaSemanaMostrando = new Date(this.hoy.getTime() - (1000 * 60 * 60 * 24));
+    },
     removeSelectedText() {
       if (window.getSelection) {
         if (window.getSelection().empty) {  // Chrome
@@ -46,11 +57,37 @@ export default {
         document.selection.empty();
       }
     },
+    nombreMesCabecera() {
+      let ultimoDiaViendoEnSemana = new Date(this.primerDiaSemanaMostrando.getTime() + (1000 * 60 * 60 * 24 * (this.numDiasMostrando - 1)));
+      if (this.primerDiaSemanaMostrando.getMonth() === ultimoDiaViendoEnSemana.getMonth()) {
+        return this.nombreMesCompleto(this.primerDiaSemanaMostrando.getMonth());
+      }
+      return this.nombreMesCompleto(this.primerDiaSemanaMostrando.getMonth()) + ' - ' + this.nombreMesCompleto(ultimoDiaViendoEnSemana.getMonth());
+    },
+    nombreMesCompleto(mes) {
+      switch(mes) {
+        case 0: return 'Enero';
+        case 1: return 'Febrero';
+        case 2: return 'Marzo';
+        case 3: return 'Abril';
+        case 4: return 'Mayo';
+        case 5: return 'Junio';
+        case 6: return 'Julio';
+        case 7: return 'Agosto';
+        case 8: return 'Septiembre';
+        case 9: return 'Octubre';
+        case 10: return 'Noviembre';
+        case 11: return 'Diciembre';
+      }
+    },
   },
   created() {
     this.yearMostrando = this.hoy.getFullYear();
     this.mesMostrando = this.hoy.getMonth() + 1;
     this.primerDiaSemanaMostrando = new Date(this.hoy.getTime() - (1000 * 60 * 60 * 24));
+    setTimeout(() => {
+      this.hoy = new Date();
+    }, (1000 * 60 * 5));
     /*
       fetch(this.serverBack+'/rest/eventos')
       .then(response => response.json())
@@ -60,22 +97,6 @@ export default {
 </script>
 
 <style>
-.zonaBarraSuperior {
-  float: left;
-  width: 100%;
-  height: 80px;
-}
-.zonaBarraLateral {
-  float: left;
-  width: 250px;
-  height: calc(100% - 80px);
-  padding-left: 10px;
-}
-.zonaPrincipal {
-  float: left;
-  width: calc(100% - 250px);
-  height: calc(100% - 80px);
-}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -117,5 +138,26 @@ ul, li {
 }
 a {
     text-decoration: none;
+}
+.zonaBarraSuperior {
+  float: left;
+  width: 100%;
+  height: 60px;
+  border-bottom: 1px solid #d0d0d0;
+}
+.zonaBarraLateral {
+  float: left;
+  width: 250px;
+  height: calc(100% - 60px);
+  padding-left: 10px;
+  padding-top: 100px;
+}
+.zonaPrincipal {
+  float: left;
+  width: calc(100% - 250px);
+  height: calc(100% - 60px);
+  position: absolute;
+  right: 0;
+  bottom: 0;
 }
 </style>

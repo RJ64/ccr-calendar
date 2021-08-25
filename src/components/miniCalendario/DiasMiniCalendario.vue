@@ -1,8 +1,8 @@
 <template>
-  <div v-for="numDiaEnMiniMes in 42" :key="numDiaEnMiniMes" class="cuadradoDia">
+  <div :style="{'width': 'calc(100% / '+numDiasMostrando+')'}" v-for="numDiaEnMiniMes in 42" :key="numDiaEnMiniMes" class="cuadradoDia">
     <div class="semanaViendo">
       <DiaMiniCalendario 
-        :dia="diaPintar(numDiaEnMiniMes)" 
+        :dia="new Date(primerLunesMiniMes.getTime() + (1000 * 60 * 60 * 24 * (numDiaEnMiniMes - 1)))" 
         :hoy="hoy" 
         :mesMostrando="mesMostrando" 
         :primerDiaSemanaMostrando="primerDiaSemanaMostrando"
@@ -53,9 +53,7 @@ export default {
     }
   },
   methods: {
-    diaPintar(numDiaMesEnMiniCalendario) {
-      return new Date(this.primerLunesMiniMes.getTime() + (1000 * 60 * 60 * 24 * (numDiaMesEnMiniCalendario - 1)));
-    },
+    
   },
   created() {
     
@@ -74,7 +72,6 @@ export default {
 }
 .cuadradoDia {
   float: left;
-  width: calc(100% / 7);
   position: relative;
 }
 </style>

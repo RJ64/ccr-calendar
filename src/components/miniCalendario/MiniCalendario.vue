@@ -132,7 +132,6 @@ export default {
   float: left;
   width: calc(100% - 50px);
   text-align: left;
-  padding-left: 5px;
   font-size: 15px;
 }
 .flechasCambiarMiniMes {
