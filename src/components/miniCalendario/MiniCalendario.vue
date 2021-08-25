@@ -135,22 +135,27 @@ export default {
 }
 .datosMes {
   float: left;
-  width: calc(100% - 50px);
+  width: calc(100% - 62px);
   text-align: left;
   font-size: 15px;
+  padding-left: 10px;
 }
 .flechasCambiarMiniMes {
   float: left;
-  width: 50px;
+  width: 62px;
 }
 .flechaCambiarMes {
   float: left;
-  width: 20px;
+  width: 31px;
   background-image: url(/imagenes/flecha.png);
-  background-size: 80%;
+  background-size: 40%;
   background-position: center center;
   background-repeat: no-repeat;
   cursor: pointer;
+  border-radius: 100%;
+}
+.flechaCambiarMes:hover {
+  background-color: #f2f2f2;
 }
 .flechaCambiarMes.anterior {
   transform: rotate(180deg);

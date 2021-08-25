@@ -88,6 +88,9 @@ export default {
   font-size: 14px;
   border-radius: 2px;
 }
+.botonHoy:hover {
+  background-color: #f7f7f7;
+}
 .zonaFlechasCambiarSemana {
   float: left;
   width: 100px;
