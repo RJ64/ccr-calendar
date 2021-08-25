@@ -1,18 +1,24 @@
 <template>
+
   <div class="zonaLogo"></div>
+
   <div @click="irAHoy()" class="botonHoy">Hoy</div>
+
   <div class="zonaFlechasCambiarSemana">
     <div class="flechaCambiarMes anterior" @click="semanaAnterior()"></div>
     <div class="flechaCambiarMes siguiente" @click="semanaSiguiente()"></div>
   </div>
+
   <div class="mesViendo">
     {{ nombreMesCabecera() }} de {{ primerDiaSemanaMostrando.getFullYear() }}
   </div>
+
 </template>
 
 <script>
 export default {
   name: 'Cabecera',
+  emits: ["semanaAnterior", "semanaSiguiente", "irAHoy"],
   props: {
     primerDiaSemanaMostrando: {
       type: Date,
@@ -27,23 +33,15 @@ export default {
       required: true,
     },
   },
-  data() {
-      return {
-        
-      };
-  },
   methods: {
     semanaAnterior() {
-      this.$emit("semanaAnterior", "semanaAnterior")
-      //this.primerDiaSemanaMostrando = new Date(this.primerDiaSemanaMostrando.getTime() - (1000 * 60 * 60 * 24));
+      this.$emit("semanaAnterior", "semanaAnterior");
     },
     semanaSiguiente() {
-      this.$emit("semanaSiguiente", "semanaSiguiente")
-      //this.primerDiaSemanaMostrando = new Date(this.primerDiaSemanaMostrando.getTime() + (1000 * 60 * 60 * 24));
+      this.$emit("semanaSiguiente", "semanaSiguiente");
     },
     irAHoy() {
-      this.$emit("irAHoy", "irAHoy")
-      //this.primerDiaSemanaMostrando = new Date(this.hoy.getTime() - (1000 * 60 * 60 * 24));
+      this.$emit("irAHoy", "irAHoy");
     },
     nombreMesCabecera() {
       let ultimoDiaViendoEnSemana = new Date(this.primerDiaSemanaMostrando.getTime() + (1000 * 60 * 60 * 24 * (this.numDiasMostrando - 1)));

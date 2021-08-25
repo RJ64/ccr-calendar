@@ -80,14 +80,23 @@ export default {
         case 11: return 'Diciembre';
       }
     },
+    cadaMinuto() {
+      console.log('cadaMinuto')
+      this.hoy = new Date();
+    },
   },
   created() {
+
     this.yearMostrando = this.hoy.getFullYear();
     this.mesMostrando = this.hoy.getMonth() + 1;
     this.primerDiaSemanaMostrando = new Date(this.hoy.getTime() - (1000 * 60 * 60 * 24));
+    
     setTimeout(() => {
-      this.hoy = new Date();
-    }, (1000 * 60 * 5));
+      setInterval(() => {
+        this.cadaMinuto();
+      }, (1000 * 60));
+      this.cadaMinuto();
+    }, (60 - new Date().getSeconds()) * 1000);
     /*
       fetch(this.serverBack+'/rest/eventos')
       .then(response => response.json())
