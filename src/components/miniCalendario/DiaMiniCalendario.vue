@@ -4,7 +4,7 @@
     'inicioSemanaMirando' : inicioSemanaMirando(), 
     'finSemanaMirando' : finSemanaMirando(), 
     }">
-      <div :class="{
+      <div @click="irADia(dia)" :class="{
         'diaEnMes' : true, 
         'otroMes': (dia.getMonth() + 1) != mesMostrando, 
         'hoy': mismoDia(dia, hoy),
@@ -15,6 +15,7 @@
 <script>
 export default {
   name: 'DiaMiniCalendario',
+  emits: ["irADia"],
   props: {
     dia: {
       type: Date,
@@ -69,6 +70,9 @@ export default {
     },
     mismoMes(dia1, dia2) {
       return dia1.getMonth() === dia2.getMonth() && dia1.getFullYear() === dia2.getFullYear();
+    },
+    irADia(dia) {
+      this.$emit("irADia", dia);
     },
   },
   created() {

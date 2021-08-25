@@ -1,7 +1,19 @@
 <template>
-  <div :style="{'width': 'calc(100% / '+numDiasMostrando+')'}" v-for="numDiaEnMiniMes in 42" :key="numDiaEnMiniMes" class="cuadradoDia">
+
+  <div 
+  :style="{
+    'width': 'calc(100% / '+numDiasMostrando+')'
+  }" 
+  v-for="numDiaEnMiniMes in 42" 
+  :key="numDiaEnMiniMes" 
+  :class="{
+    'cuadradoDia' : true, 
+    'esFinde' : esFinde(new Date(primerLunesMiniMes.getTime() + (1000 * 60 * 60 * 24 * (numDiaEnMiniMes - 1)))), 
+  }">
+
     <div class="semanaViendo">
       <DiaMiniCalendario 
+        @irADia="irADia"
         :dia="new Date(primerLunesMiniMes.getTime() + (1000 * 60 * 60 * 24 * (numDiaEnMiniMes - 1)))" 
         :hoy="hoy" 
         :mesMostrando="mesMostrando" 
@@ -16,6 +28,7 @@ import DiaMiniCalendario from './DiaMiniCalendario.vue'
 
 export default {
   name: 'DiasMiniCalendario',
+  emits: ["irADia"],
   components: {
     DiaMiniCalendario,
   },
@@ -53,7 +66,12 @@ export default {
     }
   },
   methods: {
-    
+    irADia(dia) {
+      this.$emit("irADia", dia);
+    },
+    esFinde(dia) {
+      return dia.getDay() === 0 || dia.getDay() === 6
+    },
   },
   created() {
     
@@ -73,5 +91,8 @@ export default {
 .cuadradoDia {
   float: left;
   position: relative;
+}
+.cuadradoDia.esFinde {
+  background-color: #dbdbdb;
 }
 </style>

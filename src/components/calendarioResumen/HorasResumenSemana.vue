@@ -1,21 +1,36 @@
 <template>
 
   <div class="zonaPrincipalCalendarioResumenSemana">
+
       <div class="lateralZonaHoraria">
         <div :style="{'height': alturaHora+'px'}" v-for="horaPintando in 24" :key="horaPintando" class="filaHora">
           <div v-if="horaPintando > 1" class="semilinea"></div>
           <div v-if="horaPintando < 24" class="hora">{{ horaPintando }}:00</div>
         </div>
       </div>
+
       <div class="zonaPrincipalEventos">
-        <div :style="{'width': 'calc(100% / '+numDiasMostrando+')'}" v-for="numColumnaDiaPintando in numDiasMostrando" :key="numColumnaDiaPintando" class="columnaDiaEventos">
+        <div 
+          :style="{
+            'width': 'calc(100% / '+numDiasMostrando+')'
+          }" 
+          v-for="numColumnaDiaPintando in numDiasMostrando" 
+          :key="numColumnaDiaPintando" 
+          :class="{
+            'columnaDiaEventos' : true, 
+            'esFinde' : esFinde(diaColumnaMostrando(numColumnaDiaPintando)), 
+          }">
+
           <div :style="{'height': alturaHora+'px'}" v-for="horaPintando in 24" :key="horaPintando" class="filaHoraEventos"></div>
+          
           <div class="zonaLineaAhora" :style="{'top': ((alturaHora * hoy.getHours()) + ((alturaHora * hoy.getMinutes()) / 60))+'px'}" v-if="mismoDia(diaColumnaMostrando(numColumnaDiaPintando), hoy)">
             <div class="bolaAhora"></div>
             <div class="lineaAhora"></div>
           </div>
+
         </div>
       </div>
+
   </div>
 
 </template>
@@ -51,6 +66,9 @@ export default {
     },
     diaColumnaMostrando(numColumnaDiaPintando) {
       return new Date(this.primerDiaSemanaMostrando.getTime() + (1000 * 60 * 60 * 24 * (numColumnaDiaPintando - 1)));
+    },
+    esFinde(dia) {
+      return dia.getDay() === 0 || dia.getDay() === 6
     },
   },
   mounted() {
@@ -98,6 +116,9 @@ export default {
 .columnaDiaEventos {
   float: left;
   position: relative;
+}
+.columnaDiaEventos.esFinde {
+  background-color: #dbdbdb;
 }
 .zonaLineaAhora {
   position: absolute;

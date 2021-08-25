@@ -17,6 +17,7 @@
       <div class="cuadradoDia diaDeLaSemana">D</div>
     </div>
     <DiasMiniCalendario 
+      @irADia="irADia"
       :mesMostrando="mesMostrandoLocalmente" 
       :yearMostrando="yearMostrandoLocalmente" 
       :hoy="hoy" 
@@ -32,6 +33,7 @@ const inputDateFormat = 'DD-MM-YYYY';
 
 export default {
   name: 'MiniCalendario',
+  emits: ["irADia"],
   components: {
     DiasMiniCalendario,
   },
@@ -104,6 +106,9 @@ export default {
         this.yearMostrandoLocalmente++;
       }
       this.mesMostrandoLocalmente++;
+    },
+    irADia(dia) {
+      this.$emit("irADia", dia);
     },
   },
   created() {

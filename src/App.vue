@@ -4,7 +4,7 @@
       <Cabecera @semanaAnterior="semanaAnterior" @semanaSiguiente="semanaSiguiente" @irAHoy="irAHoy" :primerDiaSemanaMostrando="primerDiaSemanaMostrando" :numDiasMostrando="numDiasMostrando" :hoy="hoy"/>
     </div>
     <div class="zonaBarraLateral">
-      <MiniCalendario :primerDiaSemanaMostrando="primerDiaSemanaMostrando" :numDiasMostrando="numDiasMostrando" :mesMostrando="mesMostrando" :hoy="hoy" :yearMostrando="yearMostrando"/>
+      <MiniCalendario @irADia="irADia" :primerDiaSemanaMostrando="primerDiaSemanaMostrando" :numDiasMostrando="numDiasMostrando" :mesMostrando="mesMostrando" :hoy="hoy" :yearMostrando="yearMostrando"/>
     </div>
     <div class="zonaPrincipal">
       <CalendarioResumenSemana :primerDiaSemanaMostrando="primerDiaSemanaMostrando" :numDiasMostrando="numDiasMostrando" :hoy="hoy"/>
@@ -45,6 +45,9 @@ export default {
     },
     irAHoy() {
       this.primerDiaSemanaMostrando = new Date(this.hoy.getTime() - (1000 * 60 * 60 * 24));
+    },
+    irADia(dia) {
+      this.primerDiaSemanaMostrando = new Date(dia.getTime() - (1000 * 60 * 60 * 24));
     },
     removeSelectedText() {
       if (window.getSelection) {
