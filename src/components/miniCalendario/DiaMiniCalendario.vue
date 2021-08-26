@@ -112,9 +112,9 @@ export default {
   color: #57a4e8;
 }
 .inicioSemanaMirando {
-  border-radius: 20px 0 0 20px;
+  border-radius: 10px 0 0 10px;
 }
 .finSemanaMirando {
-  border-radius: 0 20px 20px 0;
+  border-radius: 0 10px 10px 0;
 }
 </style>
