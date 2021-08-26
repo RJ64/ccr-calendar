@@ -40,6 +40,7 @@ import shared from './../../shared.js'
 
 export default {
   name: 'HorasResumenSemana',
+  emits: ["horasResumenSemanaMontada"],
   props: {
     primerDiaSemanaMostrando: {
       type: Date,
@@ -86,6 +87,7 @@ export default {
   },
   mounted() {
     this.cambioSizeVentana();
+    this.$emit("horasResumenSemanaMontada");
   },
   created() {
     window.addEventListener("resize", this.cambioSizeVentana);

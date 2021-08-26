@@ -84,7 +84,6 @@ export default {
       }
     },
     cadaMinuto() {
-      console.log('cadaMinuto')
       this.hoy = new Date();
     },
   },

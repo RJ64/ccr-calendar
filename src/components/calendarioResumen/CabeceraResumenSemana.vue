@@ -26,7 +26,6 @@ import EventosDiaCompletoCabeceraResumenSemana from './EventosDiaCompletoCabecer
 
 export default {
   name: 'CabeceraResumenSemana',
-  emits: ["cabeceraResumenSemanaMontada"],
   components: {
     DiasCabeceraResumenSemana,
     EventosDiaCompletoCabeceraResumenSemana,
@@ -55,9 +54,6 @@ export default {
       let signo = cambioHorario > 0 ? '-' : '+';
       return 'GMT' + signo + Math.abs(cambioHorario);
     },
-  },
-  mounted() {
-      this.$emit("cabeceraResumenSemanaMontada");
   },
 }
 </script>

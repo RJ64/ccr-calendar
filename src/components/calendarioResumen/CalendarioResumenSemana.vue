@@ -4,13 +4,13 @@
     :primerDiaSemanaMostrando="primerDiaSemanaMostrando" 
     :numDiasMostrando="numDiasMostrando" 
     :hoy="hoy"
-    :paddingCabeceraSiScroll="paddingCabeceraSiScroll"
-    @cabeceraResumenSemanaMontada="cabeceraResumenSemanaMontada"/>
+    :paddingCabeceraSiScroll="paddingCabeceraSiScroll"/>
 
   <HorasResumenSemana 
     :primerDiaSemanaMostrando="primerDiaSemanaMostrando" 
     :numDiasMostrando="numDiasMostrando" 
-    :hoy="hoy"/>
+    :hoy="hoy"
+    @horasResumenSemanaMontada="horasResumenSemanaMontada"/>
 
 </template>
 
@@ -48,7 +48,6 @@ export default {
       this.actualizarPaddingCabeceraSiScrollPresente();
     },
     actualizarPaddingCabeceraSiScrollPresente() {
-
       let selectorExteriorEventos = document.querySelector(".zonaPrincipalCalendarioResumenSemana");
       let selectorLateralZonaHoraria = document.querySelector(".lateralZonaHoraria");
       let selectorEventosPorHoras = document.querySelector(".zonaPrincipalEventos");
@@ -67,7 +66,7 @@ export default {
       }
 
     },
-    cabeceraResumenSemanaMontada() {
+    horasResumenSemanaMontada() {
       this.actualizarPaddingCabeceraSiScrollPresente();
     },
   },
