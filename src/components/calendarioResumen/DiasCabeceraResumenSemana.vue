@@ -28,6 +28,8 @@
 </template>
 
 <script>
+import shared from './../../shared.js'
+
 export default {
   name: 'DiasCabeceraResumenSemana',
   props: {
@@ -46,13 +48,10 @@ export default {
   },
   methods: {
     mismoDia(dia1, dia2) {
-      return dia1.getDate() === dia2.getDate() && this.mismoMes(dia1, dia2);
-    },
-    mismoMes(dia1, dia2) {
-      return dia1.getMonth() === dia2.getMonth() && dia1.getFullYear() === dia2.getFullYear();
+      return shared.mismoDia(dia1, dia2);
     },
     diaColumnaMostrando(numColumnaDiaPintando) {
-      return new Date(this.primerDiaSemanaMostrando.getTime() + (1000 * 60 * 60 * 24 * (numColumnaDiaPintando - 1)));
+      return shared.diaColumnaMostrando(this.primerDiaSemanaMostrando, numColumnaDiaPintando);
     },
     nombreCortoDiaDeLaSemanaDesdeDia(dia) {
       switch(dia.getDay()) {
@@ -66,7 +65,7 @@ export default {
       }
     },
     esFinde(dia) {
-      return dia.getDay() === 0 || dia.getDay() === 6
+      return shared.esFinde(dia)
     },
   },
 }

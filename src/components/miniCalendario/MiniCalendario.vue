@@ -27,9 +27,7 @@
 </template>
 
 <script>
-import DiasMiniCalendario from './DiasMiniCalendario.vue'
-import { format } from 'date-fns';
-const inputDateFormat = 'DD-MM-YYYY';
+import DiasMiniCalendario from './DiasMiniCalendario.vue';
 
 export default {
   name: 'MiniCalendario',
@@ -65,7 +63,11 @@ export default {
         yearMostrandoLocalmente : this.yearMostrando
       };
   },
-  computed: {
+  watch: { 
+    primerDiaSemanaMostrando: function(newVal) {
+      this.mesMostrandoLocalmente = newVal.getMonth() + 1;
+      this.yearMostrandoLocalmente = newVal.getFullYear();
+    }
   },
   methods: {
     mesAHumano(numMes) {
@@ -84,15 +86,6 @@ export default {
         case 12: return 'Diciembre';
       }
     },
-    diasEnMes(month, year) {
-      return new Date(year, month, 0).getDate();
-    },
-    numDiasAPartirDeDia(dia, diasDespues) {
-      return new Date(dia.getTime() + (1000 * 60 * 60 * 24 * diasDespues))
-    },
-    diaFormateado(dia) {
-      return format(dia, inputDateFormat);
-    },
     mesAnterior() {
       if (this.mesMostrandoLocalmente === 1) {
         this.mesMostrandoLocalmente = 12;
@@ -110,9 +103,6 @@ export default {
     irADia(dia) {
       this.$emit("irADia", dia);
     },
-  },
-  created() {
-    
   },
 }
 </script>

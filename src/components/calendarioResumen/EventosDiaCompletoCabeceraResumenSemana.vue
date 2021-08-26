@@ -23,6 +23,8 @@
 </template>
 
 <script>
+import shared from './../../shared.js'
+
 export default {
   name: 'EventosDiaCompletoCabeceraResumenSemana',
   props: {
@@ -46,7 +48,7 @@ export default {
       return 'GMT' + signo + Math.abs(cambioHorario);
     },
     diaColumnaMostrando(numColumnaDiaPintando) {
-      return new Date(this.primerDiaSemanaMostrando.getTime() + (1000 * 60 * 60 * 24 * (numColumnaDiaPintando - 1)));
+      return shared.diaColumnaMostrando(this.primerDiaSemanaMostrando, numColumnaDiaPintando);
     },
     esFinde(dia) {
       return dia.getDay() === 0 || dia.getDay() === 6

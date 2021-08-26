@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import shared from './../../shared.js'
 import DiaMiniCalendario from './DiaMiniCalendario.vue'
 
 export default {
@@ -54,10 +55,6 @@ export default {
       required: true,
     },
   },
-  data() {
-      return {
-      };
-  },
   computed: {
     primerLunesMiniMes() {
       let primerDiaDelMes = new Date(this.yearMostrando, this.mesMostrando - 1, 1);
@@ -70,11 +67,8 @@ export default {
       this.$emit("irADia", dia);
     },
     esFinde(dia) {
-      return dia.getDay() === 0 || dia.getDay() === 6
+      return shared.esFinde(dia);
     },
-  },
-  created() {
-    
   },
 }
 </script>

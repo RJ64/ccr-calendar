@@ -44,10 +44,10 @@ export default {
       this.primerDiaSemanaMostrando = new Date(this.primerDiaSemanaMostrando.getTime() + (1000 * 60 * 60 * 24));
     },
     irAHoy() {
-      this.primerDiaSemanaMostrando = new Date(this.hoy.getTime() - (1000 * 60 * 60 * 24));
+      this.primerDiaSemanaMostrando = new Date(this.hoy.getTime());
     },
     irADia(dia) {
-      this.primerDiaSemanaMostrando = new Date(dia.getTime() - (1000 * 60 * 60 * 24));
+      this.primerDiaSemanaMostrando = new Date(dia.getTime());
     },
     removeSelectedText() {
       if (window.getSelection) {
@@ -92,7 +92,7 @@ export default {
 
     this.yearMostrando = this.hoy.getFullYear();
     this.mesMostrando = this.hoy.getMonth() + 1;
-    this.primerDiaSemanaMostrando = new Date(this.hoy.getTime() - (1000 * 60 * 60 * 24));
+    this.primerDiaSemanaMostrando = new Date(this.hoy.getTime());
     
     setTimeout(() => {
       setInterval(() => {

@@ -13,6 +13,8 @@
 </template>
 
 <script>
+import shared from './../../shared.js'
+
 export default {
   name: 'DiaMiniCalendario',
   emits: ["irADia"],
@@ -38,10 +40,6 @@ export default {
       required: true,
     },
   },
-  data() {
-      return {
-      };
-  },
   computed: {
     diaEnSemanaMirando() {
       for(let i = 0; i < this.numDiasMostrando; i++) {
@@ -66,16 +64,11 @@ export default {
       );
     },
     mismoDia(dia1, dia2) {
-      return dia1.getDate() === dia2.getDate() && this.mismoMes(dia1, dia2);
-    },
-    mismoMes(dia1, dia2) {
-      return dia1.getMonth() === dia2.getMonth() && dia1.getFullYear() === dia2.getFullYear();
+      return shared.mismoDia(dia1, dia2);
     },
     irADia(dia) {
       this.$emit("irADia", dia);
     },
-  },
-  created() {
   },
 }
 </script>

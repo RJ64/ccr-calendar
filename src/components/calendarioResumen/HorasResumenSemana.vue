@@ -36,6 +36,8 @@
 </template>
 
 <script>
+import shared from './../../shared.js'
+
 export default {
   name: 'HorasResumenSemana',
   props: {
@@ -65,10 +67,10 @@ export default {
       return dia1.getMonth() === dia2.getMonth() && dia1.getFullYear() === dia2.getFullYear();
     },
     diaColumnaMostrando(numColumnaDiaPintando) {
-      return new Date(this.primerDiaSemanaMostrando.getTime() + (1000 * 60 * 60 * 24 * (numColumnaDiaPintando - 1)));
+      return shared.diaColumnaMostrando(this.primerDiaSemanaMostrando, numColumnaDiaPintando);
     },
     esFinde(dia) {
-      return dia.getDay() === 0 || dia.getDay() === 6
+      return shared.esFinde(dia);
     },
   },
   mounted() {
