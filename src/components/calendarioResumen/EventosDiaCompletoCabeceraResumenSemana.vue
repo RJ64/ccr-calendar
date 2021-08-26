@@ -1,13 +1,23 @@
 <template>
 
   <div class="zonaEventosDiariosCabeceraCalendarioResumenSemana">
+
     <div class="lateralZonaHorariaCabecera">
       <div class="zonaHoraria">{{ zonaHoraria() }}</div>
     </div>
+
     <div class="zonaEventosDiarios">
-      <div :style="{'width': 'calc(100% / '+numDiasMostrando+')'}" v-for="numColumnaDiaPintando in numDiasMostrando" :key="numColumnaDiaPintando" class="eventosDiariosColumnaSemana">
+      <div 
+      :style="{'width': 'calc(100% / '+numDiasMostrando+')'}" 
+      v-for="numColumnaDiaPintando in numDiasMostrando" 
+      :key="numColumnaDiaPintando" 
+      :class="{
+        'eventosDiariosColumnaSemana' : true, 
+        'esFinde' : esFinde(diaColumnaMostrando(numColumnaDiaPintando)), 
+      }">
       </div>
     </div>
+
   </div>
 
 </template>
@@ -34,6 +44,12 @@ export default {
       let cambioHorario = this.hoy.getTimezoneOffset() / 60;
       let signo = cambioHorario > 0 ? '-' : '+';
       return 'GMT' + signo + Math.abs(cambioHorario);
+    },
+    diaColumnaMostrando(numColumnaDiaPintando) {
+      return new Date(this.primerDiaSemanaMostrando.getTime() + (1000 * 60 * 60 * 24 * (numColumnaDiaPintando - 1)));
+    },
+    esFinde(dia) {
+      return dia.getDay() === 0 || dia.getDay() === 6
     },
   },
 }
@@ -67,5 +83,8 @@ export default {
   float: left;
   height: 100%;
   border-left: 1px solid #b7b7b7;
+}
+.eventosDiariosColumnaSemana.esFinde {
+  background-color: #dbdbdb;
 }
 </style>

@@ -161,7 +161,7 @@ a {
   float: left;
   width: 250px;
   height: calc(100% - 60px);
-  padding: 100px 10px 0;
+  padding: 80px 10px 0;
 }
 .zonaPrincipal {
   float: left;

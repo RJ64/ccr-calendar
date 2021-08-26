@@ -1,16 +1,28 @@
 <template>
 
   <div class="zonaSuperiorCabeceraCalendarioResumenSemana">
-    <div :style="{'width': 'calc(100% / '+numDiasMostrando+')'}" v-for="numColumnaDiaPintando in numDiasMostrando" :key="numColumnaDiaPintando" class="columnaResumenSemana">
+
+    <div 
+    :style="{'width': 'calc(100% / '+numDiasMostrando+')'}" 
+    v-for="numColumnaDiaPintando in numDiasMostrando" 
+    :key="numColumnaDiaPintando" 
+    :class="{
+      'columnaResumenSemana' : true, 
+      'esFinde' : esFinde(diaColumnaMostrando(numColumnaDiaPintando)), 
+    }">
+
       <div :class="{
         'diaDeLaSemana' : true, 
         'esHoy' : mismoDia(diaColumnaMostrando(numColumnaDiaPintando), hoy), 
         }">{{ nombreCortoDiaDeLaSemanaDesdeDia(diaColumnaMostrando(numColumnaDiaPintando)) }}</div>
+
       <div :class="{
         'numDiaDeLaSemana' : true, 
         'esHoy' : mismoDia(diaColumnaMostrando(numColumnaDiaPintando), hoy), 
         }">{{ diaColumnaMostrando(numColumnaDiaPintando).getDate() }}</div>
+
     </div>
+
   </div>
 
 </template>
@@ -53,6 +65,9 @@ export default {
         case 6: return "Sáb";
       }
     },
+    esFinde(dia) {
+      return dia.getDay() === 0 || dia.getDay() === 6
+    },
   },
 }
 </script>
@@ -68,6 +83,10 @@ export default {
 .columnaResumenSemana {
   float: left;
   text-align: center;
+  height: 100%;
+}
+.columnaResumenSemana.esFinde {
+  background-color: #dbdbdb;
 }
 .diaDeLaSemana {
   font-size: 12px;

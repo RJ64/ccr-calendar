@@ -76,6 +76,10 @@ export default {
   float: left;
   width: 250px;
   height: 100%;
+  background-image: url(/imagenes/rigovi.png);
+  background-size: 50%;
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .botonHoy {
   float: left;
