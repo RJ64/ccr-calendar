@@ -17,9 +17,11 @@
         }">{{ nombreCortoDiaDeLaSemanaDesdeDia(diaColumnaMostrando(numColumnaDiaPintando)) }}</div>
 
       <div :class="{
-        'numDiaDeLaSemana' : true, 
+        'exteriorNumDiaDeLaSemana' : true, 
         'esHoy' : mismoDia(diaColumnaMostrando(numColumnaDiaPintando), hoy), 
-        }">{{ diaColumnaMostrando(numColumnaDiaPintando).getDate() }}</div>
+      }">
+        <div class="numDiaDeLaSemana">{{ diaColumnaMostrando(numColumnaDiaPintando).getDate() }}</div>
+      </div>
 
     </div>
 
@@ -95,18 +97,28 @@ export default {
 .diaDeLaSemana.esHoy {
   color: #57a4e8;
 }
-.numDiaDeLaSemana {
+.exteriorNumDiaDeLaSemana {
   font-size: 26px;
   width: 50px;
   height: 50px;
   border-radius: 100%;
-  line-height: 56px;
   position: relative;
   left: 50%;
   transform: translate(-50%, 0);
 }
-.numDiaDeLaSemana.esHoy {
+.exteriorNumDiaDeLaSemana.esHoy {
   background-color: #57a4e8;
   color: white;
+}
+.numDiaDeLaSemana {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+@-moz-document url-prefix() {
+  .numDiaDeLaSemana {
+    padding-top: 5px;
+  }
 }
 </style>

@@ -1,6 +1,10 @@
 <template>
 
-  <div class="cabeceraCalendarioResumenSemana">
+  <div 
+    class="cabeceraCalendarioResumenSemana"
+    :style="{
+      'padding-right': paddingCabeceraSiScroll+'px'
+    }">
 
     <DiasCabeceraResumenSemana 
       :primerDiaSemanaMostrando="primerDiaSemanaMostrando" 
@@ -22,6 +26,7 @@ import EventosDiaCompletoCabeceraResumenSemana from './EventosDiaCompletoCabecer
 
 export default {
   name: 'CabeceraResumenSemana',
+  emits: ["cabeceraResumenSemanaMontada"],
   components: {
     DiasCabeceraResumenSemana,
     EventosDiaCompletoCabeceraResumenSemana,
@@ -39,6 +44,10 @@ export default {
       type: Date,
       required: true,
     },
+    paddingCabeceraSiScroll: {
+      type: Number,
+      required: true,
+    },
   },
   methods: {
     zonaHoraria() {
@@ -46,6 +55,9 @@ export default {
       let signo = cambioHorario > 0 ? '-' : '+';
       return 'GMT' + signo + Math.abs(cambioHorario);
     },
+  },
+  mounted() {
+      this.$emit("cabeceraResumenSemanaMontada");
   },
 }
 </script>
@@ -57,7 +69,6 @@ export default {
   width: 100%;
   height: 100px;
   position: relative;
-  padding-right: 12px;
 }
 .cabeceraCalendarioResumenSemana::after {
   -moz-box-shadow: inset 0 1px 1px 0 rgba(0,0,0,.14),inset 0 2px 1px -1px rgba(0,0,0,.12);
@@ -65,9 +76,12 @@ export default {
   content: "";
   height: 4px;
   position: absolute;
-  width: calc(100% - 16px);
+  width: 100%;
   z-index: 505;
   left: 0;
   bottom: -4px;
+}
+.cabeceraCalendarioResumenSemana.scroll {
+  padding-right: 12px;
 }
 </style>

@@ -35,13 +35,13 @@ export default {
   },
   methods: {
     semanaAnterior() {
-      this.$emit("semanaAnterior", "semanaAnterior");
+      this.$emit("semanaAnterior");
     },
     semanaSiguiente() {
-      this.$emit("semanaSiguiente", "semanaSiguiente");
+      this.$emit("semanaSiguiente");
     },
     irAHoy() {
-      this.$emit("irAHoy", "irAHoy");
+      this.$emit("irAHoy");
     },
     nombreMesCabecera() {
       let ultimoDiaViendoEnSemana = new Date(this.primerDiaSemanaMostrando.getTime() + (1000 * 60 * 60 * 24 * (this.numDiasMostrando - 1)));

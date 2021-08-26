@@ -3,7 +3,7 @@
   <div class="zonaPrincipalCalendarioResumenSemana">
 
       <div class="lateralZonaHoraria">
-        <div :style="{'height': alturaHora+'px'}" v-for="horaPintando in 24" :key="horaPintando" class="filaHora">
+        <div v-for="horaPintando in 24" :key="horaPintando" class="filaHora">
           <div v-if="horaPintando > 1" class="semilinea"></div>
           <div v-if="horaPintando < 24" class="hora">{{ horaPintando }}:00</div>
         </div>
@@ -21,9 +21,9 @@
             'esFinde' : esFinde(diaColumnaMostrando(numColumnaDiaPintando)), 
           }">
 
-          <div :style="{'height': alturaHora+'px'}" v-for="horaPintando in 24" :key="horaPintando" class="filaHoraEventos"></div>
+          <div v-for="horaPintando in 24" :key="horaPintando" class="filaHoraEventos"></div>
           
-          <div class="zonaLineaAhora" :style="{'top': ((alturaHora * hoy.getHours()) + ((alturaHora * hoy.getMinutes()) / 60))+'px'}" v-if="mismoDia(diaColumnaMostrando(numColumnaDiaPintando), hoy)">
+          <div class="zonaLineaAhora" :style="{'top': topZonaLineaAhora+'px'}" v-if="mismoDia(diaColumnaMostrando(numColumnaDiaPintando), hoy)">
             <div class="bolaAhora"></div>
             <div class="lineaAhora"></div>
           </div>
@@ -56,8 +56,13 @@ export default {
   },
   data() {
       return {
-          alturaHora: 50,
+          alturaHora: 0,
       };
+  },
+  computed: {
+    topZonaLineaAhora() {
+      return ((this.alturaHora * this.hoy.getHours()) + ((this.alturaHora * this.hoy.getMinutes()) / 60));
+    },
   },
   methods: {
     mismoDia(dia1, dia2) {
@@ -72,9 +77,21 @@ export default {
     esFinde(dia) {
       return shared.esFinde(dia);
     },
+    cambioSizeVentana() {
+      this.actualizarAlturaHora();
+    },
+    actualizarAlturaHora() {
+      this.alturaHora = document.querySelector('.filaHoraEventos').offsetHeight;
+    },
   },
   mounted() {
-    document.querySelector(".zonaPrincipalCalendarioResumenSemana").scrollTop = this.alturaHora * 6;
+    this.cambioSizeVentana();
+  },
+  created() {
+    window.addEventListener("resize", this.cambioSizeVentana);
+  },
+  unmounted() {
+    window.removeEventListener("resize", this.cambioSizeVentana);
   },
 }
 </script>
@@ -90,11 +107,16 @@ export default {
 .lateralZonaHoraria {
   float: left;
   width: 50px;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 .filaHora {
   float: left;
   width: 100%;
   position: relative;
+  flex: 1;
+  min-height: 30px;
 }
 .filaHora .semilinea {
   position: absolute;
@@ -114,10 +136,14 @@ export default {
 .zonaPrincipalEventos {
   float: left;
   width: calc(100% - 50px);
+  height: 100%;
 }
 .columnaDiaEventos {
   float: left;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
 }
 .columnaDiaEventos.esFinde {
   background-color: #dbdbdb;
@@ -145,8 +171,11 @@ export default {
   width: 100%;
   border-left: 1px solid #b7b7b7;
   border-top: 1px solid #b7b7b7;
+  flex: 1;
+  min-height: 30px;
 }
 .filaHoraEventos:first-child {
   border-top: none;
+  padding-top: 1px;
 }
 </style>
