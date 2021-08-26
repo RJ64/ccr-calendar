@@ -23,6 +23,7 @@
 
           <div v-for="horaPintando in 24" :key="horaPintando" class="filaHoraEventos"></div>
           
+          // TODO: a las 23:59 produce overflow
           <div class="zonaLineaAhora" :style="{'top': topZonaLineaAhora+'px'}" v-if="mismoDia(diaColumnaMostrando(numColumnaDiaPintando), hoy)">
             <div class="bolaAhora"></div>
             <div class="lineaAhora"></div>
