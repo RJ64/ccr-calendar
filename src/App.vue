@@ -99,7 +99,6 @@ export default {
 
       }
       
-console.log(eventos)
       return eventos;
       
     },

@@ -90,7 +90,7 @@ let timeInicio = new Date().getTime();
       let numMaximoEventosALaVezPorDiaPorIdEvento = {};
       let posicionEventoPorDiaPorIdEvento = {};
 
-      // Por cada día
+      // Por cada día/columna
       this.datesColumnasMostrando.forEach(dateRecorriendo => {
         
         let keyDiaRecorriendo = dateRecorriendo.getFullYear()+shared.dosDigitos(dateRecorriendo.getMonth() + 1)+shared.dosDigitos(dateRecorriendo.getDate());
@@ -98,14 +98,13 @@ let timeInicio = new Date().getTime();
         numMaximoEventosALaVezPorDiaPorIdEvento[keyDiaRecorriendo] = {};
         posicionEventoPorDiaPorIdEvento[keyDiaRecorriendo] = {};
  
+        // Creamos un mapa de los eventos por cada día y minuto
         this.eventosNoDiaCompletoOrdenadosPorFechaInicio.forEach(evento => {
 
-          let dateInicioEvento = evento.fechaEvento.inicio;
-          let dateFinEvento = evento.fechaEvento.fin;
-          let dateInicioEventoComparadoConDateRecorriendo = this.compararDateConDateMirandoDiaMesYear(dateInicioEvento, dateRecorriendo);
-          let dateFinEventoComparadoConDateRecorriendo = this.compararDateConDateMirandoDiaMesYear(dateFinEvento, dateRecorriendo);
+          let dateInicioEventoComparadoConDateRecorriendo = this.compararDateConDateMirandoDiaMesYear(evento.fechaEvento.inicio, dateRecorriendo);
+          let dateFinEventoComparadoConDateRecorriendo = this.compararDateConDateMirandoDiaMesYear(evento.fechaEvento.fin, dateRecorriendo);
 
-          // Si el evento recurre el día, lo procesamos
+          // Si el evento recurre en el día, lo procesamos
           if (
             dateInicioEventoComparadoConDateRecorriendo <= 0
             && dateFinEventoComparadoConDateRecorriendo >= 0
@@ -134,14 +133,13 @@ let timeInicio = new Date().getTime();
 
         });
 
+        // Creamos un mapa del num máximos de eventos a la vez por cada día y evento
         this.eventosNoDiaCompletoOrdenadosPorFechaInicio.forEach(evento => {
 
-          let dateInicioEvento = evento.fechaEvento.inicio;
-          let dateFinEvento = evento.fechaEvento.fin;
-          let dateInicioEventoComparadoConDateRecorriendo = this.compararDateConDateMirandoDiaMesYear(dateInicioEvento, dateRecorriendo);
-          let dateFinEventoComparadoConDateRecorriendo = this.compararDateConDateMirandoDiaMesYear(dateFinEvento, dateRecorriendo);
+          let dateInicioEventoComparadoConDateRecorriendo = this.compararDateConDateMirandoDiaMesYear(evento.fechaEvento.inicio, dateRecorriendo);
+          let dateFinEventoComparadoConDateRecorriendo = this.compararDateConDateMirandoDiaMesYear(evento.fechaEvento.fin, dateRecorriendo);
 
-          // Si el evento recurre el día, lo procesamos
+          // Si el evento recurre en el día, lo procesamos
           if (
             dateInicioEventoComparadoConDateRecorriendo <= 0
             && dateFinEventoComparadoConDateRecorriendo >= 0
@@ -174,14 +172,13 @@ let timeInicio = new Date().getTime();
         
         posicionEventoPorDiaPorIdEvento[keyDiaRecorriendo] = {};
  
+        // Creamos un mapa con el ancho y left que tendrá el evento por cada dia e idEvento
         this.eventosNoDiaCompletoOrdenadosPorFechaInicio.forEach(evento => {
 
-          let dateInicioEvento = evento.fechaEvento.inicio;
-          let dateFinEvento = evento.fechaEvento.fin;
-          let dateInicioEventoComparadoConDateRecorriendo = this.compararDateConDateMirandoDiaMesYear(dateInicioEvento, dateRecorriendo);
-          let dateFinEventoComparadoConDateRecorriendo = this.compararDateConDateMirandoDiaMesYear(dateFinEvento, dateRecorriendo);
+          let dateInicioEventoComparadoConDateRecorriendo = this.compararDateConDateMirandoDiaMesYear(evento.fechaEvento.inicio, dateRecorriendo);
+          let dateFinEventoComparadoConDateRecorriendo = this.compararDateConDateMirandoDiaMesYear(evento.fechaEvento.fin, dateRecorriendo);
 
-          // Si el evento recurre el día, lo procesamos
+          // Si el evento recurre en el día, lo procesamos
           if (
             dateInicioEventoComparadoConDateRecorriendo <= 0
             && dateFinEventoComparadoConDateRecorriendo >= 0
@@ -275,41 +272,18 @@ console.log('Tiempo ejecución posicionEventoPorDiaPorIdEvento: '+(new Date().ge
       return eventos.filter(evento => this.eventoEnDia(date, evento));
     },
     compararDateConDate(date1, date2) {// -1 si date1 es anterior a date2, 0 iguales, 1 e.o.c
-      let datesComparadosSoloDiaMesYear = this.compararDateConDateMirandoDiaMesYear(date1, date2);
-      if (datesComparadosSoloDiaMesYear !== 0) {
-        return datesComparadosSoloDiaMesYear;
-      }
-      if (date1.getHours() === date2.getHours() && date1.getMinutes() === date2.getMinutes()) {
+      if (date1.getTime() === date2.getTime()) {
         return 0;
       }
-      if (date1.getHours() < date2.getHours() || (date1.getHours() === date2.getHours() && date1.getMinutes() < date2.getMinutes())) {
-        return -1
-      }
-      return 1;
+      return date1.getTime() < date2.getTime() ? -1 : 1;
     },
     compararDateConDateMirandoDiaMesYear(date1, date2) {
-      if (
-        date1.getFullYear() === date2.getFullYear()
-        && date1.getMonth() === date2.getMonth()
-        && date1.getDate() === date2.getDate()
-      ) {
+      let time1SoloDiaMesYear = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate()).getTime();
+      let time2SoloDiaMesYear = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate()).getTime();
+      if (time1SoloDiaMesYear === time2SoloDiaMesYear) {
         return 0;
       }
-      if (
-        date1.getFullYear() < date2.getFullYear()
-        || (
-          date1.getFullYear() === date2.getFullYear()
-          && date1.getMonth() < date2.getMonth()
-        )
-        || (
-          date1.getFullYear() === date2.getFullYear()
-          && date1.getMonth() === date2.getMonth()
-          && date1.getDate() < date2.getDate()
-        )
-      ) {
-        return -1;
-      }
-      return 1;
+      return time1SoloDiaMesYear < time2SoloDiaMesYear ? -1 : 1;
     },
     compararHoraMinuto(hora1, minuto1, hora2, minuto2) {
       if (hora1 === hora2 && minuto1 === minuto2) {
