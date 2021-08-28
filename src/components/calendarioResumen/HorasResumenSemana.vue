@@ -12,21 +12,21 @@
       <div class="zonaPrincipalEventos">
         <div 
           :style="{
-            'width': 'calc(100% / '+numDiasMostrando+')'
+            'width': 'calc(100% / '+datesColumnasMostrando.length+')'
           }" 
-          v-for="numColumnaDiaPintando in numDiasMostrando" 
-          :key="numColumnaDiaPintando" 
+          v-for="dateColumna in datesColumnasMostrando" 
+          :key="dateColumna.getTime()" 
           :class="{
             'columnaDiaEventos' : true, 
-            'esFinde' : esFinde(diaColumnaMostrando(numColumnaDiaPintando)), 
+            'esFinde' : esFinde(dateColumna), 
           }">
 
           <div v-for="horaPintando in 24" :key="horaPintando" class="filaHoraEventos"></div>
           
           <div class="eventos">
             <div 
-              :style="calcularEstiloEvento(diaColumnaMostrando(numColumnaDiaPintando), filtrarEventosDia(diaColumnaMostrando(numColumnaDiaPintando), eventos), evento)" 
-              v-for="evento in filtrarEventosDia(diaColumnaMostrando(numColumnaDiaPintando), eventos)" 
+              v-for="evento in filtrarEventosDia(dateColumna, eventos)" 
+              :style="calcularEstiloEvento(dateColumna, evento)" 
               :key="evento.id" 
               class="evento"
             >
@@ -35,7 +35,7 @@
           </div>
           
           <!-- // TODO: a las 23:59 produce overflow -->
-          <div class="zonaLineaAhora" :style="{'top': topZonaLineaAhora+'px'}" v-if="mismoDia(diaColumnaMostrando(numColumnaDiaPintando), hoy)">
+          <div class="zonaLineaAhora" :style="{'top': topZonaLineaAhora+'px'}" v-if="mismoDia(dateColumna, hoy)">
             <div class="bolaAhora"></div>
             <div class="lineaAhora"></div>
           </div>
@@ -54,12 +54,8 @@ export default {
   name: 'HorasResumenSemana',
   emits: ["horasResumenSemanaMontada"],
   props: {
-    primerDiaSemanaMostrando: {
-      type: Date,
-      required: true,
-    },
-    numDiasMostrando: {
-      type: Number,
+    datesColumnasMostrando: {
+      type: Array,
       required: true,
     },
     hoy: {
@@ -82,7 +78,7 @@ export default {
       return ((this.alturaHora * this.hoy.getHours()) + ((this.alturaHora * this.hoy.getMinutes()) / 60));
     },
     eventosNoDiaCompletoOrdenadosPorFechaInicio() {
-      let eventosNoDiaCompleto = this.eventos.filter(this.eventoNoEsDiaCompleto);
+      let eventosNoDiaCompleto = this.eventos.filter(evento => !evento.esDiaCompleto);
       eventosNoDiaCompleto.sort(this.ordenarEventosNoDiaCompletoPorFechaInicio);
       return eventosNoDiaCompleto;
     },
@@ -95,9 +91,8 @@ let timeInicio = new Date().getTime();
       let posicionEventoPorDiaPorIdEvento = {};
 
       // Por cada día
-      for (let i = 0; i < this.numDiasMostrando; i++) {
+      this.datesColumnasMostrando.forEach(dateRecorriendo => {
         
-        let dateRecorriendo = new Date(this.primerDiaSemanaMostrando.getTime() + (i * 1000 * 60 * 60 * 24));
         let keyDiaRecorriendo = dateRecorriendo.getFullYear()+shared.dosDigitos(dateRecorriendo.getMonth() + 1)+shared.dosDigitos(dateRecorriendo.getDate());
         eventosPorDiaYMinuto[keyDiaRecorriendo] = {};
         numMaximoEventosALaVezPorDiaPorIdEvento[keyDiaRecorriendo] = {};
@@ -105,8 +100,8 @@ let timeInicio = new Date().getTime();
  
         this.eventosNoDiaCompletoOrdenadosPorFechaInicio.forEach(evento => {
 
-          let dateInicioEvento = this.objectDatosDiaADate(evento.fechaEvento.inicio);
-          let dateFinEvento = this.objectDatosDiaADate(evento.fechaEvento.fin);
+          let dateInicioEvento = evento.fechaEvento.inicio;
+          let dateFinEvento = evento.fechaEvento.fin;
           let dateInicioEventoComparadoConDateRecorriendo = this.compararDateConDateMirandoDiaMesYear(dateInicioEvento, dateRecorriendo);
           let dateFinEventoComparadoConDateRecorriendo = this.compararDateConDateMirandoDiaMesYear(dateFinEvento, dateRecorriendo);
 
@@ -119,25 +114,11 @@ let timeInicio = new Date().getTime();
 
             let dateInicioEventoEnElDia = dateInicioEventoComparadoConDateRecorriendo === 0
               ? evento.fechaEvento.inicio
-              : {
-                dia: dateRecorriendo.getDate(),
-                mes: dateRecorriendo.getMonth() + 1,
-                year: dateRecorriendo.getFullYear(),
-                hora: 0,
-                minuto: 0,
-              };
-            dateInicioEventoEnElDia = this.objectDatosDiaADate(dateInicioEventoEnElDia);
+              : new Date(dateRecorriendo.getFullYear(), dateRecorriendo.getMonth(), dateRecorriendo.getDate());
 
             let dateFinEventoEnElDia = dateFinEventoComparadoConDateRecorriendo === 0
               ? evento.fechaEvento.fin
-              : {
-                dia: dateRecorriendo.getDate(),
-                mes: dateRecorriendo.getMonth() + 1,
-                year: dateRecorriendo.getFullYear(),
-                hora: 23,
-                minuto: 59,
-              };
-            dateFinEventoEnElDia = this.objectDatosDiaADate(dateFinEventoEnElDia);
+              : new Date(dateRecorriendo.getFullYear(), dateRecorriendo.getMonth(), dateRecorriendo.getDate(), 23, 59);
 
             for (let minutoEventoRecorriendo = dateInicioEventoEnElDia.getTime(); minutoEventoRecorriendo <= dateFinEventoEnElDia.getTime(); minutoEventoRecorriendo += (1000 * 60)) {
 
@@ -155,8 +136,8 @@ let timeInicio = new Date().getTime();
 
         this.eventosNoDiaCompletoOrdenadosPorFechaInicio.forEach(evento => {
 
-          let dateInicioEvento = this.objectDatosDiaADate(evento.fechaEvento.inicio);
-          let dateFinEvento = this.objectDatosDiaADate(evento.fechaEvento.fin);
+          let dateInicioEvento = evento.fechaEvento.inicio;
+          let dateFinEvento = evento.fechaEvento.fin;
           let dateInicioEventoComparadoConDateRecorriendo = this.compararDateConDateMirandoDiaMesYear(dateInicioEvento, dateRecorriendo);
           let dateFinEventoComparadoConDateRecorriendo = this.compararDateConDateMirandoDiaMesYear(dateFinEvento, dateRecorriendo);
 
@@ -169,25 +150,11 @@ let timeInicio = new Date().getTime();
 
             let dateInicioEventoEnElDia = dateInicioEventoComparadoConDateRecorriendo === 0
               ? evento.fechaEvento.inicio
-              : {
-                dia: dateRecorriendo.getDate(),
-                mes: dateRecorriendo.getMonth() + 1,
-                year: dateRecorriendo.getFullYear(),
-                hora: 0,
-                minuto: 0,
-              };
-            dateInicioEventoEnElDia = this.objectDatosDiaADate(dateInicioEventoEnElDia);
+              : new Date(dateRecorriendo.getFullYear(), dateRecorriendo.getMonth(), dateRecorriendo.getDate());
 
             let dateFinEventoEnElDia = dateFinEventoComparadoConDateRecorriendo === 0
               ? evento.fechaEvento.fin
-              : {
-                dia: dateRecorriendo.getDate(),
-                mes: dateRecorriendo.getMonth() + 1,
-                year: dateRecorriendo.getFullYear(),
-                hora: 23,
-                minuto: 59,
-              };
-            dateFinEventoEnElDia = this.objectDatosDiaADate(dateFinEventoEnElDia);
+              : new Date(dateRecorriendo.getFullYear(), dateRecorriendo.getMonth(), dateRecorriendo.getDate(), 23, 59);
 
             for (let minutoEventoRecorriendo = dateInicioEventoEnElDia.getTime(); minutoEventoRecorriendo <= dateFinEventoEnElDia.getTime(); minutoEventoRecorriendo += (1000 * 60)) {
 
@@ -209,8 +176,8 @@ let timeInicio = new Date().getTime();
  
         this.eventosNoDiaCompletoOrdenadosPorFechaInicio.forEach(evento => {
 
-          let dateInicioEvento = this.objectDatosDiaADate(evento.fechaEvento.inicio);
-          let dateFinEvento = this.objectDatosDiaADate(evento.fechaEvento.fin);
+          let dateInicioEvento = evento.fechaEvento.inicio;
+          let dateFinEvento = evento.fechaEvento.fin;
           let dateInicioEventoComparadoConDateRecorriendo = this.compararDateConDateMirandoDiaMesYear(dateInicioEvento, dateRecorriendo);
           let dateFinEventoComparadoConDateRecorriendo = this.compararDateConDateMirandoDiaMesYear(dateFinEvento, dateRecorriendo);
 
@@ -220,18 +187,9 @@ let timeInicio = new Date().getTime();
             && dateFinEventoComparadoConDateRecorriendo >= 0
           ) {
           
-            let dateInicioEvento = this.objectDatosDiaADate(evento.fechaEvento.inicio);
-            let dateInicioEventoComparadoConDateRecorriendo = this.compararDateConDateMirandoDiaMesYear(dateInicioEvento, dateRecorriendo);
             let dateInicioEventoEnElDia = dateInicioEventoComparadoConDateRecorriendo === 0
               ? evento.fechaEvento.inicio
-              : {
-                dia: dateRecorriendo.getDate(),
-                mes: dateRecorriendo.getMonth() + 1,
-                year: dateRecorriendo.getFullYear(),
-                hora: 0,
-                minuto: 0,
-              };
-            dateInicioEventoEnElDia = this.objectDatosDiaADate(dateInicioEventoEnElDia);
+              : new Date(dateRecorriendo.getFullYear(), dateRecorriendo.getMonth(), dateRecorriendo.getDate());
 
             let encontrado = false;
             let posicionOcupadas = [];
@@ -265,7 +223,7 @@ let timeInicio = new Date().getTime();
 
         });
 
-      }
+      });
 console.log('Tiempo ejecución posicionEventoPorDiaPorIdEvento: '+(new Date().getTime() - timeInicio))
 
       return posicionEventoPorDiaPorIdEvento;
@@ -273,18 +231,15 @@ console.log('Tiempo ejecución posicionEventoPorDiaPorIdEvento: '+(new Date().ge
     },
   },
   methods: {
-    eventoNoEsDiaCompleto(evento) {
-        return shared.containsKey(evento.fechaEvento, 'inicio');
-    },
     ordenarEventosNoDiaCompletoPorFechaInicio(evento1, evento2) {
 
-      let timeInicioEvento1 = this.objectDatosDiaADate(evento1.fechaEvento.inicio).getTime();
-      let timeInicioEvento2 = this.objectDatosDiaADate(evento2.fechaEvento.inicio).getTime();
+      let timeInicioEvento1 = evento1.fechaEvento.inicio.getTime();
+      let timeInicioEvento2 = evento2.fechaEvento.inicio.getTime();
 
       if (timeInicioEvento1 === timeInicioEvento2) {
 
-        let timeFinEvento1 = this.objectDatosDiaADate(evento1.fechaEvento.fin).getTime();
-        let timeFinEvento2 = this.objectDatosDiaADate(evento2.fechaEvento.fin).getTime();
+        let timeFinEvento1 = evento1.fechaEvento.fin.getTime();
+        let timeFinEvento2 = evento2.fechaEvento.fin.getTime();
         let duracionMilisegundosEvento1 = timeFinEvento1 - timeInicioEvento1;
         let duracionMilisegundosEvento2 = timeFinEvento2 - timeInicioEvento2;
 
@@ -301,14 +256,11 @@ console.log('Tiempo ejecución posicionEventoPorDiaPorIdEvento: '+(new Date().ge
       return timeInicioEvento1 < timeInicioEvento2 ? -1 : 1;
 
     },
-    mismoDia(dia1, dia2) {
-      return dia1.getDate() === dia2.getDate() && this.mismoMes(dia1, dia2);
+    mismoDia(date1, date2) {
+      return shared.mismoDia(date1, date2);
     },
-    mismoMes(dia1, dia2) {
-      return dia1.getMonth() === dia2.getMonth() && dia1.getFullYear() === dia2.getFullYear();
-    },
-    diaColumnaMostrando(numColumnaDiaPintando) {
-      return shared.diaColumnaMostrando(this.primerDiaSemanaMostrando, numColumnaDiaPintando);
+    mismoMes(date1, date2) {
+      return shared.mismoMes(date1, date2);
     },
     esFinde(dia) {
       return shared.esFinde(dia);
@@ -319,11 +271,8 @@ console.log('Tiempo ejecución posicionEventoPorDiaPorIdEvento: '+(new Date().ge
     actualizarAlturaHora() {
       this.alturaHora = document.querySelector('.filaHoraEventos').offsetHeight;
     },
-    filtrarEventosDia(dia, eventos) {
-      return eventos.filter(evento => this.eventoEnDia(dia, evento));
-    },
-    objectDatosDiaADate(objectDatosDia) {
-      return new Date(objectDatosDia.year, objectDatosDia.mes - 1, objectDatosDia.dia, objectDatosDia.hora, objectDatosDia.minuto);
+    filtrarEventosDia(date, eventos) {
+      return eventos.filter(evento => this.eventoEnDia(date, evento));
     },
     compararDateConDate(date1, date2) {// -1 si date1 es anterior a date2, 0 iguales, 1 e.o.c
       let datesComparadosSoloDiaMesYear = this.compararDateConDateMirandoDiaMesYear(date1, date2);
@@ -372,20 +321,11 @@ console.log('Tiempo ejecución posicionEventoPorDiaPorIdEvento: '+(new Date().ge
       return 1;
     },
     eventoEnDia(dateDia, evento) {
-
-      if (!shared.containsKey(evento.fechaEvento, 'inicio') ) {
-        return false;
-      }
-      
-      let dateInicio = this.objectDatosDiaADate(evento.fechaEvento.inicio);
-      let dateFin = this.objectDatosDiaADate(evento.fechaEvento.fin);
-      return (
-        this.compararDateConDateMirandoDiaMesYear(dateInicio, dateDia) < 1
-        && this.compararDateConDateMirandoDiaMesYear(dateDia, dateFin) < 1
-      );
-
+      return !evento.esDiaCompleto
+        && this.compararDateConDateMirandoDiaMesYear(evento.fechaEvento.inicio, dateDia) < 1
+        && this.compararDateConDateMirandoDiaMesYear(dateDia, evento.fechaEvento.fin) < 1;
     },
-    calcularEstiloEvento(dateColumna, eventos, evento) {
+    calcularEstiloEvento(dateColumna, evento) {
 
       /* 
         - Cómo se colocan los eventos
@@ -410,29 +350,15 @@ console.log('Tiempo ejecución posicionEventoPorDiaPorIdEvento: '+(new Date().ge
             Evento6: Cuando empieza, ya hay 4 eventos (Evento1 en la columna 0, Evento3 en la columna 2, Evento4 en la columna 3 y Evento5 en la columna 1). La primera columna libre es la 4
       */
 
-      let dateInicioEvento = this.objectDatosDiaADate(evento.fechaEvento.inicio);
+      let dateInicioEvento = evento.fechaEvento.inicio;
       let dateInicioEventoEnElDia = this.compararDateConDateMirandoDiaMesYear(dateInicioEvento, dateColumna) === 0
         ? evento.fechaEvento.inicio
-        : {
-          dia: dateColumna.getDate(),
-          mes: dateColumna.getMonth() + 1,
-          year: dateColumna.getFullYear(),
-          hora: 0,
-          minuto: 0,
-        };
-      dateInicioEventoEnElDia = this.objectDatosDiaADate(dateInicioEventoEnElDia);
+        : new Date(dateColumna.getFullYear(), dateColumna.getMonth(), dateColumna.getDate());
 
-      let dateFinEvento = this.objectDatosDiaADate(evento.fechaEvento.fin);
+      let dateFinEvento = evento.fechaEvento.fin;
       let dateFinEventoEnElDia = this.compararDateConDateMirandoDiaMesYear(dateFinEvento, dateColumna) === 0
         ? evento.fechaEvento.fin
-        : {
-          dia: dateColumna.getDate(),
-          mes: dateColumna.getMonth() + 1,
-          year: dateColumna.getFullYear(),
-          hora: 23,
-          minuto: 59,
-        };
-      dateFinEventoEnElDia = this.objectDatosDiaADate(dateFinEventoEnElDia);
+        : new Date(dateColumna.getFullYear(), dateColumna.getMonth(), dateColumna.getDate(), 23, 59);
       
       let keyDiaRecorriendo = dateColumna.getFullYear()+shared.dosDigitos(dateColumna.getMonth() + 1)+shared.dosDigitos(dateColumna.getDate());
       let posicionEvento = this.posicionEventoPorDiaPorIdEvento[keyDiaRecorriendo][evento.idEvento];
@@ -459,64 +385,6 @@ console.log('Tiempo ejecución posicionEventoPorDiaPorIdEvento: '+(new Date().ge
       }
       
       return respuesta;
-    },
-    sacarEventosMaximosALaVez(dateInicio, dateFin) {
-
-      let keyDiaRecorriendo = dateInicio.getFullYear()+shared.dosDigitos(dateInicio.getMonth() + 1)+shared.dosDigitos(dateInicio.getDate());
-      let numEventosPorMinuto = this.numEventosPorDiaYMinuto[keyDiaRecorriendo];
-      
-      let eventosMaximos = 0;
-      for (let minutoEventoRecorriendo = dateInicio.getTime(); minutoEventoRecorriendo <= dateFin.getTime(); minutoEventoRecorriendo += (1000 * 60)) {
-        if (numEventosPorMinuto[minutoEventoRecorriendo] > eventosMaximos) {
-          eventosMaximos = numEventosPorMinuto[minutoEventoRecorriendo];
-        }
-      }
-
-      return eventosMaximos;
-      
-    },
-    numEventosOcurriendoEnElDate(eventos, date) {
-      return eventos.filter(evento => {
-        
-        let dateInicioEvento = this.objectDatosDiaADate(evento.fechaEvento.inicio);
-        let inicioEventoComparadoConDate = this.compararDateConDate(dateInicioEvento, date);
-
-        let dateFinEvento = this.objectDatosDiaADate(evento.fechaEvento.fin);
-        let finEventoComparadoConDate = this.compararDateConDate(dateFinEvento, date);
-
-        return inicioEventoComparadoConDate <= 0
-          && finEventoComparadoConDate >= 0;
-      });
-    },
-    sacarEventosHanEmpezadoAntesDeYTerminanDespuesDeOIgual(eventos, dateInicio) {
-      return eventos.filter(evento => {
-        
-        let dateInicioEvento = this.objectDatosDiaADate(evento.fechaEvento.inicio);
-        let inicioEventoComparadoConDateInicio = this.compararDateConDate(dateInicioEvento, dateInicio);
-
-        let dateFinEvento = this.objectDatosDiaADate(evento.fechaEvento.fin);
-        let finEventoComparadoConDateInicio = this.compararDateConDate(dateFinEvento, dateInicio);
-
-        return inicioEventoComparadoConDateInicio < 0
-          && finEventoComparadoConDateInicio >= 0;
-      });
-    },
-    sacarEventosQueEmpecienanALas(eventos, dateInicio) {
-      return eventos.filter(evento => {
-        let dateInicioEvento = this.objectDatosDiaADate(evento.fechaEvento.inicio);
-        return this.compararDateConDate(dateInicioEvento, dateInicio) === 0;
-      });
-    },
-    sacarEventosQueEmpiezanEntreDosDates(eventos, dateInicio, dateFin) {
-      return eventos.filter(evento => {
-        
-        let dateInicioEvento = this.objectDatosDiaADate(evento.fechaEvento.inicio);
-        let inicioEventoComparadoConDateInicio = this.compararDateConDate(dateInicioEvento, dateInicio);
-        let inicioEventoComparadoConDateFin = this.compararDateConDate(dateInicioEvento, dateFin);
-
-        return inicioEventoComparadoConDateInicio > 0
-          && inicioEventoComparadoConDateFin <= 0;
-      });
     },
   },
   mounted() {

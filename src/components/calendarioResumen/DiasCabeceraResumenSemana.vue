@@ -3,24 +3,24 @@
   <div class="zonaSuperiorCabeceraCalendarioResumenSemana">
 
     <div 
-    :style="{'width': 'calc(100% / '+numDiasMostrando+')'}" 
-    v-for="numColumnaDiaPintando in numDiasMostrando" 
-    :key="numColumnaDiaPintando" 
+    :style="{'width': 'calc(100% / '+datesColumnasMostrando.length+')'}" 
+    v-for="dateColumnaMostrando in datesColumnasMostrando" 
+    :key="dateColumnaMostrando.getTime()" 
     :class="{
       'columnaResumenSemana' : true, 
-      'esFinde' : esFinde(diaColumnaMostrando(numColumnaDiaPintando)), 
+      'esFinde' : esFinde(dateColumnaMostrando), 
     }">
 
       <div :class="{
         'diaDeLaSemana' : true, 
-        'esHoy' : mismoDia(diaColumnaMostrando(numColumnaDiaPintando), hoy), 
-        }">{{ nombreCortoDiaDeLaSemanaDesdeDia(diaColumnaMostrando(numColumnaDiaPintando)) }}</div>
+        'esHoy' : mismoDia(dateColumnaMostrando, hoy), 
+        }">{{ nombreCortoDiaDeLaSemanaDesdeDia(dateColumnaMostrando) }}</div>
 
       <div :class="{
         'exteriorNumDiaDeLaSemana' : true, 
-        'esHoy' : mismoDia(diaColumnaMostrando(numColumnaDiaPintando), hoy), 
+        'esHoy' : mismoDia(dateColumnaMostrando, hoy), 
       }">
-        <div class="numDiaDeLaSemana">{{ diaColumnaMostrando(numColumnaDiaPintando).getDate() }}</div>
+        <div class="numDiaDeLaSemana">{{ dateColumnaMostrando.getDate() }}</div>
       </div>
 
     </div>
@@ -35,12 +35,8 @@ import shared from './../../shared.js'
 export default {
   name: 'DiasCabeceraResumenSemana',
   props: {
-    primerDiaSemanaMostrando: {
-      type: Date,
-      required: true,
-    },
-    numDiasMostrando: {
-      type: Number,
+    datesColumnasMostrando: {
+      type: Array,
       required: true,
     },
     hoy: {
@@ -49,14 +45,11 @@ export default {
     },
   },
   methods: {
-    mismoDia(dia1, dia2) {
-      return shared.mismoDia(dia1, dia2);
+    mismoDia(date1, date2) {
+      return shared.mismoDia(date1, date2);
     },
-    diaColumnaMostrando(numColumnaDiaPintando) {
-      return shared.diaColumnaMostrando(this.primerDiaSemanaMostrando, numColumnaDiaPintando);
-    },
-    nombreCortoDiaDeLaSemanaDesdeDia(dia) {
-      switch(dia.getDay()) {
+    nombreCortoDiaDeLaSemanaDesdeDia(date) {
+      switch(date.getDay()) {
         case 0: return "Dom";
         case 1: return "Lun";
         case 2: return "Mar";
@@ -66,8 +59,8 @@ export default {
         case 6: return "Sáb";
       }
     },
-    esFinde(dia) {
-      return shared.esFinde(dia)
+    esFinde(date) {
+      return shared.esFinde(date)
     },
   },
 }

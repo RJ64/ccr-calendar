@@ -1,15 +1,12 @@
 export default {
-    esFinde: function(dia) { 
-        return dia.getDay() === 0 || dia.getDay() === 6 
+    esFinde: function(date) { 
+        return date.getDay() === 0 || date.getDay() === 6 
     },
-    mismoDia: function(dia1, dia2) {
-        return dia1.getDate() === dia2.getDate() && this.mismoMes(dia1, dia2);
+    mismoDia: function(date1, date2) {
+        return date1.getDate() === date2.getDate() && this.mismoMes(date1, date2);
     },
-    mismoMes: function(dia1, dia2) {
-        return dia1.getMonth() === dia2.getMonth() && dia1.getFullYear() === dia2.getFullYear();
-    },
-    diaColumnaMostrando: function(primerDiaSemanaMostrando, numColumnaDiaPintando) {
-        return new Date(primerDiaSemanaMostrando.getTime() + (1000 * 60 * 60 * 24 * (numColumnaDiaPintando - 1)));
+    mismoMes: function(date1, date2) {
+        return date1.getMonth() === date2.getMonth() && date1.getFullYear() === date2.getFullYear();
     },
     dosDigitos: function(numero) {
         if (numero < 10) return '0'+numero;

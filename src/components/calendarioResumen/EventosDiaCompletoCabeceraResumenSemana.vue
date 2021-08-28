@@ -8,12 +8,12 @@
 
     <div class="zonaEventosDiarios">
       <div 
-      :style="{'width': 'calc(100% / '+numDiasMostrando+')'}" 
-      v-for="numColumnaDiaPintando in numDiasMostrando" 
-      :key="numColumnaDiaPintando" 
+      :style="{'width': 'calc(100% / '+datesColumnasMostrando.length+')'}" 
+      v-for="dateColumnaMostrando in datesColumnasMostrando" 
+      :key="dateColumnaMostrando.getTime()" 
       :class="{
         'eventosDiariosColumnaSemana' : true, 
-        'esFinde' : esFinde(diaColumnaMostrando(numColumnaDiaPintando)), 
+        'esFinde' : esFinde(dateColumnaMostrando), 
       }">
       </div>
     </div>
@@ -28,16 +28,12 @@ import shared from './../../shared.js'
 export default {
   name: 'EventosDiaCompletoCabeceraResumenSemana',
   props: {
-    primerDiaSemanaMostrando: {
-      type: Date,
+    datesColumnasMostrando: {
+      type: Array,
       required: true,
     },
     hoy: {
       type: Date,
-      required: true,
-    },
-    numDiasMostrando: {
-      type: Number,
       required: true,
     },
   },
@@ -47,11 +43,8 @@ export default {
       let signo = cambioHorario > 0 ? '-' : '+';
       return 'GMT' + signo + Math.abs(cambioHorario);
     },
-    diaColumnaMostrando(numColumnaDiaPintando) {
-      return shared.diaColumnaMostrando(this.primerDiaSemanaMostrando, numColumnaDiaPintando);
-    },
-    esFinde(dia) {
-      return dia.getDay() === 0 || dia.getDay() === 6
+    esFinde(date) {
+      return shared.esFinde(date)
     },
   },
 }

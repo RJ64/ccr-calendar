@@ -1,14 +1,12 @@
 <template>
 
   <CabeceraResumenSemana 
-    :primerDiaSemanaMostrando="primerDiaSemanaMostrando" 
-    :numDiasMostrando="numDiasMostrando" 
+    :datesColumnasMostrando="datesColumnasMostrando" 
     :hoy="hoy"
     :paddingCabeceraSiScroll="paddingCabeceraSiScroll"/>
 
   <HorasResumenSemana 
-    :primerDiaSemanaMostrando="primerDiaSemanaMostrando" 
-    :numDiasMostrando="numDiasMostrando" 
+    :datesColumnasMostrando="datesColumnasMostrando" 
     :hoy="hoy"
     :eventos="eventos"
     @horasResumenSemanaMontada="horasResumenSemanaMontada"/>
@@ -48,7 +46,21 @@ export default {
           paddingCabeceraSiScroll: 0,
       };
   },
+  computed: {
+    datesColumnasMostrando() {
+      let timePrimerDiaSemanaMostrando = this.primerDiaSemanaMostrando.getTime();
+      let arrayDatesColumnasMostrando = [];
+      for (let i = 0; i < this.numDiasMostrando; i++) {
+        let dateColumna = new Date(timePrimerDiaSemanaMostrando + this.diasAMilisegundos(i));
+        arrayDatesColumnasMostrando.push(dateColumna);
+      }
+      return arrayDatesColumnasMostrando;
+    },
+  },
   methods: {
+    diasAMilisegundos(numDias) {
+      return 1000 * 60 * 60 * 24 * numDias;
+    },
     cambioSizeVentana() {
       this.actualizarPaddingCabeceraSiScrollPresente();
     },

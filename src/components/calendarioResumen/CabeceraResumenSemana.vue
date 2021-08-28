@@ -7,13 +7,11 @@
     }">
 
     <DiasCabeceraResumenSemana 
-      :primerDiaSemanaMostrando="primerDiaSemanaMostrando" 
-      :numDiasMostrando="numDiasMostrando" 
+      :datesColumnasMostrando="datesColumnasMostrando" 
       :hoy="hoy"/>
 
     <EventosDiaCompletoCabeceraResumenSemana 
-      :primerDiaSemanaMostrando="primerDiaSemanaMostrando" 
-      :numDiasMostrando="numDiasMostrando"
+      :datesColumnasMostrando="datesColumnasMostrando" 
       :hoy="hoy"/>
 
   </div>
@@ -31,12 +29,8 @@ export default {
     EventosDiaCompletoCabeceraResumenSemana,
   },
   props: {
-    primerDiaSemanaMostrando: {
-      type: Date,
-      required: true,
-    },
-    numDiasMostrando: {
-      type: Number,
+    datesColumnasMostrando: {
+      type: Array,
       required: true,
     },
     hoy: {
