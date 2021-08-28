@@ -1,5 +1,7 @@
 # Cosas pendientes
 
+Añadir al evento, la hora/rango
+Mostrar los eventos diarios y expandir los diarios
 Abrir evento
 Crear evento
 Eliminar evento
