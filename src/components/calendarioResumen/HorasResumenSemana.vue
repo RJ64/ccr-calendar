@@ -251,7 +251,7 @@ let timeInicio = new Date().getTime();
 
                 posicionEventoPorDiaPorIdEvento[keyDiaRecorriendo][evento.idEvento] = {
                   posicion: primeraPosicionDisponible,
-                  ancho: numMaximoEventosALaVezPorDiaPorIdEvento[keyDiaRecorriendo][evento.idEvento]
+                  ancho: numMaximoEventosALaVezPorDiaPorIdEvento[keyDiaRecorriendo][evento.idEvento],
                 };
 
               }
@@ -386,6 +386,29 @@ console.log('Tiempo ejecución posicionEventoPorDiaPorIdEvento: '+(new Date().ge
 
     },
     calcularEstiloEvento(dateColumna, eventos, evento) {
+
+      /* 
+        - Cómo se colocan los eventos
+        Partiendo de que parece ser un milagro (no es perfecto pero funciona sorprendentemente bastante bien), procedamos a explicarlo un poco.
+        1. Se calcula con cuantos eventos máximos va a coincidir a la vez. Ese es su ancho (ej. con otros 4 => ancho = 100 / (4 + 1) = 20%)
+        2. Se ordenan los eventos por fecha y hora de inicio, si iguales por duración, si iguales por idEvento
+        2. Se van recorriendo los eventos ordenados y se van colocando en columnas. Veámoslo con un ejemplo (recomiendo pintar para verlo mejor):
+         - Tienes 6 eventos. 
+            Evento1 de 12:00 a 16:00 (Sus máximas coincidencias son con Evento3, Evento4, Evento5 y Evento6 => ancho 20%)
+            Evento2 de 12:30 a 13:30 (Sus máximas coincidencias son con Evento1, Evento3 y Evento4 => ancho 25%)
+            Evento3 de 13:00 a 15:00
+            Evento4 de 13:00 a 15:30
+            Evento5 de 14:00 a 14:30
+            Evento6 de 14:15 a 14:20
+          Se ordenan e irían: Evento1, Evento2, Evento4, Evento3, Evento5 y Evento6
+          Se van colocando:
+            Evento1: Es el único cuando empieza => columna 0
+            Evento2: Cuando empieza, ya hay otro evento (Evento1) y está en la columna 0 => se pone en la columna1
+            Evento3: Cuando empieza, ya hay 2 eventos (Evento1 y Evento2). La primera columna libre es la 2
+            Evento4: Cuando empieza, ya hay 3 eventos (Evento1, Evento2 y Evento3). La primera columna libre es la 3
+            Evento5: Cuando empieza, ya hay 3 eventos (Evento1 en la columna 0, Evento3 en la columna 2 y Evento4 en la columna 3). La primera columna libre es la 1
+            Evento6: Cuando empieza, ya hay 4 eventos (Evento1 en la columna 0, Evento3 en la columna 2, Evento4 en la columna 3 y Evento5 en la columna 1). La primera columna libre es la 4
+      */
 
       let dateInicioEvento = this.objectDatosDiaADate(evento.fechaEvento.inicio);
       let dateInicioEventoEnElDia = this.compararDateConDateMirandoDiaMesYear(dateInicioEvento, dateColumna) === 0
