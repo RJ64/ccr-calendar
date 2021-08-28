@@ -10,6 +10,7 @@
     :primerDiaSemanaMostrando="primerDiaSemanaMostrando" 
     :numDiasMostrando="numDiasMostrando" 
     :hoy="hoy"
+    :eventos="eventos"
     @horasResumenSemanaMontada="horasResumenSemanaMontada"/>
 
 </template>
@@ -35,6 +36,10 @@ export default {
     },
     hoy: {
       type: Date,
+      required: true,
+    },
+    eventos: {
+      type: Array,
       required: true,
     },
   },

@@ -9,6 +9,13 @@ export default {
         return dia1.getMonth() === dia2.getMonth() && dia1.getFullYear() === dia2.getFullYear();
     },
     diaColumnaMostrando: function(primerDiaSemanaMostrando, numColumnaDiaPintando) {
-      return new Date(primerDiaSemanaMostrando.getTime() + (1000 * 60 * 60 * 24 * (numColumnaDiaPintando - 1)));
+        return new Date(primerDiaSemanaMostrando.getTime() + (1000 * 60 * 60 * 24 * (numColumnaDiaPintando - 1)));
+    },
+    dosDigitos: function(numero) {
+        if (numero < 10) return '0'+numero;
+        return numero;
+    },
+    containsKey(obj, key) {
+        return Object.keys(obj).includes(key);
     },
 }
