@@ -1,6 +1,5 @@
 # Cosas pendientes
 
-Añadir al evento, la hora/rango
 Abrir evento
 Crear evento
 Eliminar evento

@@ -24,7 +24,7 @@
           <div v-for="horaPintando in 24" :key="horaPintando" class="filaHoraEventos"></div>
           
           <div v-if="hayEventosDeDiaCompleto(dateColumna, eventos)" class="eventosDiarios">
-            <div class="tituloZonaEventosDiaCompleto">Todo el día</div>
+            <div class="tituloZonaEventosDiaCompleto">Todo el día:</div>
             <div 
               v-for="evento in filtrarEventosDiaCompleto(dateColumna, eventos)" 
               :key="evento.id" 
@@ -46,6 +46,7 @@
               class="evento"
             >
               <div class="nombre">{{ evento.titulo }}</div>
+              <div class="horasEvento">{{ horasEvento(evento) }}</div>
             </div>
           </div>
           
@@ -243,6 +244,11 @@ console.log('Tiempo ejecución posicionEventoPorDiaPorIdEvento: '+(new Date().ge
     },
   },
   methods: {
+    horasEvento(evento) {
+      let dateInicio = evento.fechaEvento.inicio;
+      let dateFin = evento.fechaEvento.fin;
+      return shared.dosDigitos(dateInicio.getHours())+':'+shared.dosDigitos(dateInicio.getMinutes())+' - '+shared.dosDigitos(dateFin.getHours())+':'+shared.dosDigitos(dateFin.getMinutes())
+    },
     ordenarEventosNoDiaCompletoPorFechaInicio(evento1, evento2) {
 
       let timeInicioEvento1 = evento1.fechaEvento.inicio.getTime();
@@ -506,11 +512,10 @@ console.log('Tiempo ejecución posicionEventoPorDiaPorIdEvento: '+(new Date().ge
   text-align: left;
   padding: 5px 0 0 2px;
   font-size: 12px;
-  border-bottom: 1px solid #b7b7b7;
 }
 .eventosDiarios .evento {
   float: left;
-  width: 100%;
+  width: calc(100% - 2px);
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 11px;
@@ -519,7 +524,7 @@ console.log('Tiempo ejecución posicionEventoPorDiaPorIdEvento: '+(new Date().ge
   background-color: #559dea;
   border: 1px solid #3678bf;
   color: white;
-  margin: 2px 0 0;
+  margin: 2px 0 0 1px;
   cursor: pointer;
   max-height: 45px;
 }
@@ -545,5 +550,12 @@ console.log('Tiempo ejecución posicionEventoPorDiaPorIdEvento: '+(new Date().ge
   padding: 5px;
   cursor: pointer;
   overflow: hidden;
+}
+.evento .nombre {
+  font-weight: bold;
+}
+.evento .horasEvento {
+  font-size: 11px;
+  white-space: nowrap;
 }
 </style>
