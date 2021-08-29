@@ -51,7 +51,11 @@
           </div>
           
           <!-- // TODO: a las 23:59 produce overflow -->
-          <div class="zonaLineaAhora" :style="{'top': topZonaLineaAhora+'px'}" v-if="mismoDia(dateColumna, hoy)">
+          <div
+            :class="{
+              'zonaLineaAhora' : true, 
+              'hayEventosDiaCompleto' : hayEventosDeDiaCompleto(dateColumna, eventos), 
+            }" :style="{'top': topZonaLineaAhora+'px'}" v-if="mismoDia(dateColumna, hoy)">
             <div class="bolaAhora"></div>
             <div class="lineaAhora"></div>
           </div>
@@ -416,7 +420,8 @@ console.log('Tiempo ejecución posicionEventoPorDiaPorIdEvento: '+(new Date().ge
   float: left;
   width: 100%;
   height: calc(100% - 100px);
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .lateralZonaHoraria {
   float: left;
@@ -465,6 +470,11 @@ console.log('Tiempo ejecución posicionEventoPorDiaPorIdEvento: '+(new Date().ge
 .zonaLineaAhora {
   position: absolute;
   width: 100%;
+  z-index: 1;
+}
+.zonaLineaAhora.hayEventosDiaCompleto {
+  width: calc(100% - 32px);
+  left: 32px;
 }
 .bolaAhora {
   position: absolute;
@@ -472,7 +482,7 @@ console.log('Tiempo ejecución posicionEventoPorDiaPorIdEvento: '+(new Date().ge
   height: 10px;
   border-radius: 100%;
   background-color: red;
-  left: -5px;
+  right: -5px;
   top: -3px;
 }
 .lineaAhora {
