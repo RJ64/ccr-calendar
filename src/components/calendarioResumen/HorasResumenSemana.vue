@@ -473,8 +473,8 @@ console.log('Tiempo ejecución posicionEventoPorDiaPorIdEvento: '+(new Date().ge
   z-index: 1;
 }
 .zonaLineaAhora.hayEventosDiaCompleto {
-  width: calc(100% - 32px);
-  left: 32px;
+  width: calc(100% - 38px);
+  left: 38px;
 }
 .bolaAhora {
   position: absolute;
@@ -506,7 +506,7 @@ console.log('Tiempo ejecución posicionEventoPorDiaPorIdEvento: '+(new Date().ge
   position: absolute;
   left: 0;
   top: 0;
-  width: 32px;
+  width: 38px;
   height: 100%;
   background-color: white;
   color: black;
@@ -525,7 +525,7 @@ console.log('Tiempo ejecución posicionEventoPorDiaPorIdEvento: '+(new Date().ge
 }
 .eventosDiarios .evento {
   float: left;
-  width: calc(100% - 2px);
+  width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 11px;
@@ -534,7 +534,7 @@ console.log('Tiempo ejecución posicionEventoPorDiaPorIdEvento: '+(new Date().ge
   background-color: #559dea;
   border: 1px solid #3678bf;
   color: white;
-  margin: 2px 0 0 1px;
+  margin: 2px 0 0 0;
   cursor: pointer;
   max-height: 45px;
 }
@@ -546,8 +546,8 @@ console.log('Tiempo ejecución posicionEventoPorDiaPorIdEvento: '+(new Date().ge
   height: 100%;
 }
 .eventos.hayEventosDiaCompleto {
-  width: calc(100% - 15px - 32px);
-  left: 32px;
+  width: calc(100% - 15px - 38px);
+  left: 38px;
 }
 .eventos .evento {
   position: absolute;

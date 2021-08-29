@@ -1,5 +1,6 @@
 # Cosas pendientes
 
+Los horas que se muestran en un evento cuando dura más de un día
 Abrir evento
 Crear evento
 Eliminar evento
