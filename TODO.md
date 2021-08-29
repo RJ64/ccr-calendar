@@ -1,7 +1,6 @@
 # Cosas pendientes
 
 Añadir al evento, la hora/rango
-Mostrar los eventos diarios y expandir los diarios
 Abrir evento
 Crear evento
 Eliminar evento
@@ -9,6 +8,8 @@ Editar evento
 Sincronizar con google calendar
 Alertas si empiezan/recordatorio 5 minutos antes
 Que no se actualicen los eventos en la variable si no han cambiado
+
+Mejorar ajax https://developer.mozilla.org/es/docs/Web/API/Fetch_API/Using_Fetch
 
 ## No prioritarios
 

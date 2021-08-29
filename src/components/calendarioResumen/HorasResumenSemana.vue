@@ -23,7 +23,22 @@
 
           <div v-for="horaPintando in 24" :key="horaPintando" class="filaHoraEventos"></div>
           
-          <div class="eventos">
+          <div v-if="hayEventosDeDiaCompleto(dateColumna, eventos)" class="eventosDiarios">
+            <div class="tituloZonaEventosDiaCompleto">Todo el día</div>
+            <div 
+              v-for="evento in filtrarEventosDiaCompleto(dateColumna, eventos)" 
+              :key="evento.id" 
+              class="evento"
+            >
+              {{ evento.titulo }}
+            </div>
+          </div>
+          
+          <div
+          :class="{
+            'eventos' : true, 
+            'hayEventosDiaCompleto' : hayEventosDeDiaCompleto(dateColumna, eventos), 
+          }">
             <div 
               v-for="evento in filtrarEventosDia(dateColumna, eventos)" 
               :style="calcularEstiloEvento(dateColumna, evento)" 
@@ -268,22 +283,20 @@ console.log('Tiempo ejecución posicionEventoPorDiaPorIdEvento: '+(new Date().ge
     actualizarAlturaHora() {
       this.alturaHora = document.querySelector('.filaHoraEventos').offsetHeight;
     },
+    hayEventosDeDiaCompleto(date, eventos) {
+      return this.filtrarEventosDiaCompleto(date, eventos).length > 0;
+    },
+    filtrarEventosDiaCompleto(date, eventos) {
+      return eventos.filter(evento => this.eventoEnDia(date, evento) && (evento.esDiaCompleto || !this.eventoNoEsDeMultiplesDiasYHoyNoDuraTodoElDia(date, evento)));
+    },
     filtrarEventosDia(date, eventos) {
-      return eventos.filter(evento => this.eventoEnDia(date, evento));
+      return eventos.filter(evento => this.eventoEnDia(date, evento) && !evento.esDiaCompleto && this.eventoNoEsDeMultiplesDiasYHoyNoDuraTodoElDia(date, evento));
     },
     compararDateConDate(date1, date2) {// -1 si date1 es anterior a date2, 0 iguales, 1 e.o.c
       if (date1.getTime() === date2.getTime()) {
         return 0;
       }
       return date1.getTime() < date2.getTime() ? -1 : 1;
-    },
-    compararDateConDateMirandoDiaMesYear(date1, date2) {
-      let time1SoloDiaMesYear = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate()).getTime();
-      let time2SoloDiaMesYear = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate()).getTime();
-      if (time1SoloDiaMesYear === time2SoloDiaMesYear) {
-        return 0;
-      }
-      return time1SoloDiaMesYear < time2SoloDiaMesYear ? -1 : 1;
     },
     compararHoraMinuto(hora1, minuto1, hora2, minuto2) {
       if (hora1 === hora2 && minuto1 === minuto2) {
@@ -295,9 +308,26 @@ console.log('Tiempo ejecución posicionEventoPorDiaPorIdEvento: '+(new Date().ge
       return 1;
     },
     eventoEnDia(dateDia, evento) {
-      return !evento.esDiaCompleto
-        && this.compararDateConDateMirandoDiaMesYear(evento.fechaEvento.inicio, dateDia) < 1
-        && this.compararDateConDateMirandoDiaMesYear(dateDia, evento.fechaEvento.fin) < 1;
+      if (shared.containsKey(evento.fechaEvento, 'inicio')) {
+        return this.compararDateConDateMirandoDiaMesYear(evento.fechaEvento.inicio, dateDia) < 1
+        && this.compararDateConDateMirandoDiaMesYear(dateDia, evento.fechaEvento.fin) < 1
+      }
+      return dateDia.getDate() === evento.fechaEvento.dia && dateDia.getMonth() + 1 === evento.fechaEvento.mes && dateDia.getFullYear() === evento.fechaEvento.year;
+    },
+    eventoNoEsDeMultiplesDiasYHoyNoDuraTodoElDia(dateDia, evento) {
+      let timeInicioEvento = evento.fechaEvento.inicio.getTime();
+      let timeFinEvento = evento.fechaEvento.fin.getTime();
+      let timeInicioDia = new Date(dateDia.getFullYear(), dateDia.getMonth(), dateDia.getDate()).getTime();
+      let timeFinDia = timeInicioDia + (1000 * 60 * 60 * 24) - 1;
+      return timeInicioEvento > timeInicioDia || timeFinEvento < timeFinDia;
+    },
+    compararDateConDateMirandoDiaMesYear(date1, date2) {
+      let time1SoloDiaMesYear = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate()).getTime();
+      let time2SoloDiaMesYear = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate()).getTime();
+      if (time1SoloDiaMesYear === time2SoloDiaMesYear) {
+        return 0;
+      }
+      return time1SoloDiaMesYear < time2SoloDiaMesYear ? -1 : 1;
     },
     calcularEstiloEvento(dateColumna, evento) {
 
@@ -456,6 +486,43 @@ console.log('Tiempo ejecución posicionEventoPorDiaPorIdEvento: '+(new Date().ge
   border-top: none;
   padding-top: 1px;
 }
+.eventosDiarios {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 32px;
+  height: 100%;
+  background-color: white;
+  color: black;
+  border-left: 1px solid #b7b7b7;
+  border-right: 1px solid #b7b7b7;
+}
+.esFinde .eventosDiarios {
+  background-color: #dbdbdb;
+}
+.tituloZonaEventosDiaCompleto {
+  float: left;
+  width: 100%;
+  text-align: left;
+  padding: 5px 0 0 2px;
+  font-size: 12px;
+  border-bottom: 1px solid #b7b7b7;
+}
+.eventosDiarios .evento {
+  float: left;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 11px;
+  padding: 2px 0 0 1px;
+  text-align: left;
+  background-color: #559dea;
+  border: 1px solid #3678bf;
+  color: white;
+  margin: 2px 0 0;
+  cursor: pointer;
+  max-height: 45px;
+}
 .eventos {
   position: absolute;
   left: 0;
@@ -463,7 +530,11 @@ console.log('Tiempo ejecución posicionEventoPorDiaPorIdEvento: '+(new Date().ge
   width: calc(100% - 15px);
   height: 100%;
 }
-.evento {
+.eventos.hayEventosDiaCompleto {
+  width: calc(100% - 15px - 32px);
+  left: 32px;
+}
+.eventos .evento {
   position: absolute;
   background-color: #559dea;
   border-radius: 4px;

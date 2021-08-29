@@ -37,6 +37,11 @@ export default {
           eventos: [],
       };
   },
+  watch: { 
+    primerDiaSemanaMostrando: function() {
+      this.cargarEventos()
+    }
+  },
   methods: {
     semanaAnterior() {
       this.primerDiaSemanaMostrando = new Date(this.primerDiaSemanaMostrando.getTime() - (1000 * 60 * 60 * 24));
@@ -122,8 +127,6 @@ export default {
     this.mesMostrando = this.hoy.getMonth() + 1;
     this.primerDiaSemanaMostrando = new Date(this.hoy.getTime());
 
-    this.cargarEventos();
-    
     setTimeout(() => {
       setInterval(() => {
         this.cadaMinuto();
