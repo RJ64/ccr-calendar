@@ -7,7 +7,7 @@
       <MiniCalendario @irADia="irADia" :primerDiaSemanaMostrando="primerDiaSemanaMostrando" :numDiasMostrando="numDiasMostrando" :mesMostrando="mesMostrando" :hoy="hoy" :yearMostrando="yearMostrando"/>
     </div>
     <div class="zonaPrincipal">
-      <CalendarioResumenSemana :primerDiaSemanaMostrando="primerDiaSemanaMostrando" :numDiasMostrando="numDiasMostrando" :hoy="hoy" :eventos="eventos"/>
+      <CalendarioResumenSemana :primerDiaSemanaMostrando="primerDiaSemanaMostrando" :numDiasMostrando="numDiasMostrando" :hoy="hoy" :eventos="eventos" :rangoEventos="rangoEventos"/>
     </div>
   </div>
 </template>
@@ -26,16 +26,20 @@ export default {
     CalendarioResumenSemana,
   },
   data() {
-      return {
-          serverBack: "http://localhost/ccr-calendar-back/www",
-          numDiasMostrando: 7,
-          hoy: new Date(),
-          mesMostrando: null,
-          yearMostrando: null,
-          primerDiaSemanaMostrando: null,
-          calendarios: [],
-          eventos: [],
-      };
+    return {
+      serverBack: "http://localhost/ccr-calendar-back/www",
+      numDiasMostrando: 7,
+      hoy: new Date(),
+      mesMostrando: null,
+      yearMostrando: null,
+      primerDiaSemanaMostrando: null,
+      calendarios: [],
+      eventos: [],
+      rangoEventos: {
+          desde: false,
+          hasta: false,
+      },
+    };
   },
   watch: { 
     primerDiaSemanaMostrando: function() {
@@ -76,14 +80,20 @@ export default {
     cargarEventos() {
 
       let desde = shared.dosDigitos(this.primerDiaSemanaMostrando.getDate())+''+shared.dosDigitos(this.primerDiaSemanaMostrando.getMonth() + 1)+''+this.primerDiaSemanaMostrando.getFullYear();
-      let dateHasta = new Date(this.primerDiaSemanaMostrando.getFullYear(), this.primerDiaSemanaMostrando.getMonth(), this.primerDiaSemanaMostrando.getDate() + this.numDiasMostrando - 1);
+      let dateHasta = new Date(this.primerDiaSemanaMostrando.getFullYear(), this.primerDiaSemanaMostrando.getMonth(), this.primerDiaSemanaMostrando.getDate() + this.numDiasMostrando - 1, 23, 59, 59);
       let hasta = shared.dosDigitos(dateHasta.getDate())+''+shared.dosDigitos(dateHasta.getMonth() + 1)+''+dateHasta.getFullYear();
 
+      let rangoEventosCargando = {
+          desde: new Date(this.primerDiaSemanaMostrando.getFullYear(), this.primerDiaSemanaMostrando.getMonth(), this.primerDiaSemanaMostrando.getDate()),
+          hasta: dateHasta,
+      };
+      
       fetch(this.serverBack+'/rest/eventos?desde='+desde+'&hasta='+hasta)
         .then(response => response.json())
         .then((eventos) => {
           // TODO: Comprobar si hay cambios antes de actualizar la variable
-          this.eventos = this.procesarEventosRecibidos(eventos)
+          this.eventos = this.procesarEventosRecibidos(eventos);
+          this.rangoEventos = rangoEventosCargando;
         });
 
     },

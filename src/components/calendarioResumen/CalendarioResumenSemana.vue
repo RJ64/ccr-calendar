@@ -9,6 +9,7 @@
     :datesColumnasMostrando="datesColumnasMostrando" 
     :hoy="hoy"
     :eventos="eventos"
+    :rangoEventos="rangoEventos"
     @horasResumenSemanaMontada="horasResumenSemanaMontada"/>
 
 </template>
@@ -38,6 +39,10 @@ export default {
     },
     eventos: {
       type: Array,
+      required: true,
+    },
+    rangoEventos: {
+      type: Object,
       required: true,
     },
   },
