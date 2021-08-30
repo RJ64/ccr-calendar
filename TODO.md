@@ -16,3 +16,4 @@ Mejorar ajax https://developer.mozilla.org/es/docs/Web/API/Fetch_API/Using_Fetch
 Diseño un poco como este https://i0.wp.com/hoyenapple.com/wp-content/uploads/2019/06/Calendario-Horizontal-Hoy-en-Apple.jpeg?resize=2000%2C1200&ssl=1
 BUG cuando son las 23:59 se produce overflow
 Altura mínima (como de 11px/15minutos) de un evento
+Que se carguen unos días más anes y después por si avanzas o retrocedas en la semana, tengas ya algunos días
